@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexis Blink | AI Assistant</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+/* Nexis Blink Premium Cosmic Palette */
+--bg-dark: #03050d;
+--sidebar-bg: rgba(4, 6, 15, 0.65);
+--chat-bg: rgba(6, 8, 22, 0.4); 
+--panel-bg: rgba(10, 15, 38, 0.5);
+
+/* High-End Cosmic Gradients */
+--primary-gradient: linear-gradient(135deg, #0052d4 0%, #4364f7 50%, #00c6ff 100%);
+--glow-blue: rgba(67, 100, 247, 0.25);
+
+--text-main: #f8fafc;
+--text-muted: #94a3b8;
+--glass-blur: blur(25px);
+--transition-premium: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+-webkit-font-smoothing: antialiased;
+}
+
+body {
+background-color: var(--bg-dark);
+background-image: linear-gradient(rgba(3, 5, 13, 0.5), rgba(3, 5, 13, 0.75)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop');
+background-size: cover;
+background-position: center;
+background-attachment: fixed;
+display: flex;
+flex-direction: column; /* Changed to column to accommodate footer at bottom */
+height: 100vh;
+color: var(--text-main);
+overflow: hidden;
+position: relative;
+}
+
+/* App Main Wrapper to separate Layout from Footer */
+.app-core {
+display: flex;
+flex: 1;
+height: calc(100vh - 80px); /* Leaves space for footer */
+width: 100%;
+overflow: hidden;
+position: relative;
+}
+
+/* --- Top Authentication Bar --- */
+.top-auth-bar {
+position: absolute;
+top: 20px;
+right: 50px;
+display: flex;
+align-items: center;
+gap: 15px;
+z-index: 100;
+}
+
+.trial-badge {
+background: rgba(255, 193, 7, 0.15);
+border: 1px solid rgba(255, 193, 7, 0.3);
+color: #ffc107;
+padding: 8px 14px;
+border-radius: 10px;
+font-size: 13px;
+font-weight: 600;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.auth-btn {
+padding: 10px 20px;
+border-radius: 12px;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+transition: var(--transition-premium);
+}
+
+.btn-signin {
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.08);
+color: white;
+}
+.btn-signin:hover {
+background: rgba(255, 255, 255, 0.08);
+border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-signup {
+background: var(--primary-gradient);
+border: none;
+color: white;
+box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3);
+}
+.btn-signup:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 25px rgba(67, 100, 247, 0.4);
+}
+
+.user-profile-badge {
+display: none;
+align-items: center;
+gap: 10px;
+background: rgba(10, 15, 38, 0.6);
+border: 1px solid rgba(0, 198, 255, 0.2);
+padding: 6px 14px;
+border-radius: 14px;
+}
+.user-profile-badge i { color: #00c6ff; }
+
+/* Logout Button Premium Style */
+.btn-logout {
+background: rgba(239, 68, 68, 0.1);
+border: 1px solid rgba(239, 68, 68, 0.2);
+color: #f87171;
+display: none; /* Shown only via JS when logged in */
+}
+.btn-logout:hover {
+background: #ef4444;
+color: white;
+box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
+
+/* --- Auth Overlay Modal & Cards --- */
+.auth-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background: rgba(3, 5, 13, 0.85);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+z-index: 999;
+display: flex;
+justify-content: center;
+align-items: center;
+opacity: 1;
+pointer-events: all;
+transition: opacity 0.4s ease;
+}
+
+.auth-overlay.hidden {
+opacity: 0;
+pointer-events: none;
+}
+
+.auth-card {
+background: rgba(6, 8, 22, 0.7);
+border: 1px solid rgba(255, 255, 255, 0.08);
+border-radius: 28px;
+width: 100%;
+max-width: 440px;
+padding: 40px;
+box-shadow: 0 30px 70px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.1);
+display: flex;
+flex-direction: column;
+gap: 24px;
+text-align: center;
+position: relative;
+}
+
+.auth-card h2 {
+font-size: 26px;
+font-weight: 800;
+background: var(--primary-gradient);
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+.auth-card p {
+color: var(--text-muted);
+font-size: 14px;
+line-height: 1.5;
+}
+
+.auth-inputs {
+display: flex;
+flex-direction: column;
+gap: 14px;
+}
+
+.input-field {
+background: rgba(10, 15, 38, 0.6);
+border: 1px solid rgba(0, 198, 255, 0.15);
+border-radius: 14px;
+padding: 14px 18px;
+color: white;
+font-size: 14.5px;
+outline: none;
+transition: var(--transition-premium);
+text-align: left;
+}
+.input-field:focus {
+border-color: #00c6ff;
+box-shadow: 0 0 15px rgba(0, 198, 255, 0.2);
+}
+
+.submit-auth-btn {
+background: var(--primary-gradient);
+color: white;
+border: none;
+padding: 15px;
+border-radius: 14px;
+font-weight: 600;
+font-size: 15px;
+cursor: pointer;
+transition: var(--transition-premium);
+margin-top: 5px;
+}
+.submit-auth-btn:hover {
+box-shadow: 0 8px 25px rgba(0, 198, 255, 0.4);
+transform: translateY(-1px);
+}
+
+.social-divider {
+display: flex;
+align-items: center;
+text-align: center;
+color: var(--text-muted);
+font-size: 12px;
+margin: 5px 0;
+}
+.social-divider::before, .social-divider::after {
+content: '';
+flex: 1;
+border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.social-divider:not(:empty)::before { margin-right: .5em; }
+.social-divider:not(:empty)::after { margin-left: .5em; }
+
+.social-btns {
+display: flex;
+gap: 12px;
+}
+
+.social-btn {
+flex: 1;
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.06);
+color: white;
+padding: 12px;
+border-radius: 12px;
+cursor: pointer;
+font-size: 14px;
+font-weight: 600;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+transition: var(--transition-premium);
+}
+.social-btn:hover {
+background: rgba(255, 255, 255, 0.08);
+border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-google i { color: #ea4335; }
+.btn-github i { color: #ffffff; }
+
+.switch-auth {
+font-size: 13px;
+color: var(--text-muted);
+margin-top: 5px;
+}
+.switch-auth span {
+color: #00c6ff;
+cursor: pointer;
+font-weight: 600;
+}
+
+.free-trial-trigger-btn {
+background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 87, 34, 0.1));
+border: 1px solid rgba(255, 193, 7, 0.4);
+color: #ffc107;
+padding: 14px;
+border-radius: 14px;
+font-weight: 700;
+cursor: pointer;
+transition: var(--transition-premium);
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+}
+.free-trial-trigger-btn:hover {
+background: linear-gradient(135deg, #ffc107, #ff5722);
+color: #03050d;
+box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
+}
+
+/* --- Sidebar Layout --- */
+.sidebar {
+width: 290px;
+background-color: var(--sidebar-bg);
+backdrop-filter: var(--glass-blur);
+-webkit-backdrop-filter: var(--glass-blur);
+border-right: 1px solid rgba(255, 255, 255, 0.05);
+display: flex;
+flex-direction: column;
+padding: 28px 20px;
+gap: 26px;
+z-index: 10;
+}
+
+.brand-logo {
+font-size: 24px;
+font-weight: 900;
+letter-spacing: 2px;
+display: inline-flex;
+align-items: center;
+gap: 12px;
+padding-left: 8px;
+background: var(--primary-gradient);
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+color: transparent;
+filter: drop-shadow(0 0 15px rgba(0, 198, 255, 0.3));
+}
+
+.new-chat-btn {
+background: linear-gradient(135deg, rgba(67, 100, 247, 0.1), rgba(0, 198, 255, 0.05));
+border: 1px solid rgba(0, 198, 255, 0.15);
+color: white;
+padding: 14px 18px;
+border-radius: 16px;
+cursor: pointer;
+font-weight: 600;
+display: flex;
+align-items: center;
+gap: 12px;
+box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+transition: var(--transition-premium);
+}
+
+.new-chat-btn:hover {
+background: var(--primary-gradient);
+border-color: transparent;
+transform: translateY(-2px);
+box-shadow: 0 8px 25px rgba(67, 100, 247, 0.35);
+}
+
+.history-list {
+flex: 1;
+display: flex;
+flex-direction: column;
+gap: 8px;
+overflow-y: auto;
+}
+
+.history-item {
+padding: 14px 16px;
+border-radius: 14px;
+font-size: 14.5px;
+color: var(--text-muted);
+cursor: pointer;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+display: flex;
+align-items: center;
+gap: 12px;
+background: rgba(255, 255, 255, 0.01);
+border: 1px solid transparent;
+transition: var(--transition-premium);
+}
+
+.history-item:hover, .history-item.active {
+background: rgba(67, 100, 247, 0.12);
+color: white;
+border-color: rgba(67, 100, 247, 0.25);
+box-shadow: inset 0 0 10px rgba(67, 100, 247, 0.15);
+}
+
+/* --- Main Chat Container --- */
+.main-chat {
+flex: 1;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 70px 50px 30px 50px; 
+position: relative;
+}
+
+.chat-container {
+width: 100%;
+max-width: 1050px;
+height: 100%;
+background-color: var(--chat-bg);
+backdrop-filter: var(--glass-blur);
+-webkit-backdrop-filter: var(--glass-blur);
+border-radius: 36px;
+border: 1px solid rgba(255, 255, 255, 0.06);
+box-shadow:
+0 40px 100px rgba(0, 0, 0, 0.55),
+inset 0 1px 1px rgba(255, 255, 255, 0.1);
+display: flex;
+flex-direction: column;
+overflow: hidden;
+}
+
+/* Header Premium Style */
+.chat-header {
+padding: 24px 40px;
+background: linear-gradient(180deg, rgba(4, 6, 15, 0.7) 0%, transparent 100%);
+border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.header-left { display: flex; align-items: center; }
+
+.logo-wrapper {
+position: relative;
+width: 48px;
+height: 48px;
+margin-right: 16px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.logo-image {
+width: 100%;
+height: 100%;
+border-radius: 14px;
+object-fit: cover;
+border: 1.5px solid #00c6ff;
+box-shadow: 0 0 15px rgba(0, 198, 255, 0.4);
+z-index: 2;
+}
+
+.logo-wrapper::before {
+content: '';
+position: absolute;
+width: 100%;
+height: 100%;
+border: 1.5px solid #00c6ff;
+border-radius: 14px;
+z-index: 1;
+opacity: 0;
+animation: radarPulse 2.5s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+}
+
+@keyframes radarPulse {
+0% { transform: scale(1); opacity: 0.6; }
+100% { transform: scale(1.35); opacity: 0; }
+}
+
+.header-info h3 { font-size: 19px; font-weight: 700; color: white; letter-spacing: -0.3px;}
+.header-actions button {
+background: rgba(255, 255, 255, 0.02);
+border: 1px solid rgba(255, 255, 255, 0.05);
+color: var(--text-muted);
+cursor: pointer;
+font-size: 15px;
+padding: 11px;
+border-radius: 12px;
+transition: var(--transition-premium);
+}
+
+.header-actions button:hover { color: #ff3366; background: rgba(255, 51, 102, 0.15); border-color: rgba(255, 51, 102, 0.3); }
+
+/* Chat Box Area */
+.chat-box {
+flex: 1;
+padding: 40px 50px;
+overflow-y: auto;
+display: flex;
+flex-direction: column;
+gap: 24px;
+scroll-behavior: smooth;
+}
+
+.chat-box::-webkit-scrollbar { width: 4px; }
+.chat-box::-webkit-scrollbar-thumb { background-color: rgba(0, 198, 255, 0.2); border-radius: 10px; }
+
+/* Chat Bubbles Layout */
+.message-wrapper {
+display: flex;
+width: 100%;
+gap: 14px;
+align-items: flex-start;
+animation: elegantSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+opacity: 0;
+transform: translateY(18px);
+}
+
+.user-wrapper {
+justify-content: flex-end;
+}
+
+@keyframes elegantSlideUp {
+to { opacity: 1; transform: translateY(0); }
+}
+
+.msg-avatar {
+width: 36px;
+height: 36px;
+border-radius: 10px;
+border: 1px solid #00c6ff;
+object-fit: cover;
+box-shadow: 0 0 10px rgba(0, 198, 255, 0.3);
+flex-shrink: 0;
+}
+
+.message {
+display: flex;
+flex-direction: column;
+max-width: 75%;
+}
+
+.message-text {
+padding: 16px 22px;
+border-radius: 22px;
+font-size: 15px;
+line-height: 1.65;
+word-break: break-word;
+white-space: pre-wrap; 
+}
+
+.bot-message .message-text {
+background-color: rgba(15, 23, 42, 0.45); 
+backdrop-filter: blur(15px);
+-webkit-backdrop-filter: blur(15px);
+border: 1px solid rgba(255, 255, 255, 0.08);
+color: #f1f5f9;
+border-top-left-radius: 4px;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.user-message .message-text {
+background: var(--primary-gradient);
+color: white;
+border-top-right-radius: 4px;
+box-shadow: 0 10px 25px rgba(67, 100, 247, 0.3);
+}
+
+.msg-actions {
+display: flex;
+gap: 12px;
+margin-top: 6px;
+padding-left: 4px;
+opacity: 0;
+transform: translateY(-3px);
+transition: var(--transition-premium);
+}
+
+.message-wrapper:hover .msg-actions { opacity: 1; transform: translateY(0); }
+
+.action-btn {
+background: none;
+border: none;
+color: var(--text-muted);
+cursor: pointer;
+font-size: 12px;
+font-weight: 600;
+display: flex;
+align-items: center;
+gap: 5px;
+padding: 4px 8px;
+border-radius: 6px;
+transition: var(--transition-premium);
+}
+
+.action-btn:hover { color: #00c6ff; background: rgba(0, 198, 255, 0.06); }
+
+/* Input Wrapper */
+.input-wrapper {
+padding: 20px 50px 35px 50px;
+background: linear-gradient(180deg, transparent 0%, rgba(3, 5, 13, 0.85) 100%);
+display: flex;
+flex-direction: column;
+gap: 14px;
+}
+
+.input-container {
+display: flex;
+align-items: center;
+background-color: var(--panel-bg);
+backdrop-filter: blur(15px);
+border: 1px solid rgba(0, 198, 255, 0.15);
+border-radius: 24px;
+padding: 10px 12px 10px 24px;
+box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+transition: var(--transition-premium);
+}
+
+.input-container:focus-within {
+border-color: #00c6ff;
+background-color: rgba(10, 15, 38, 0.7);
+box-shadow: 0 0 35px rgba(0, 198, 255, 0.25);
+transform: translateY(-1px);
+}
+
+.input-container input {
+flex: 1;
+padding: 12px 0;
+background: none;
+border: none;
+color: white;
+font-size: 15.5px;
+outline: none;
+}
+
+.input-container input::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+.input-container button {
+background: var(--primary-gradient);
+color: white;
+border: none;
+width: 46px;
+height: 46px;
+border-radius: 16px;
+cursor: pointer;
+display: flex;
+justify-content: center;
+align-items: center;
+box-shadow: 0 5px 15px rgba(0, 198, 255, 0.4);
+transition: var(--transition-premium);
+}
+
+.input-container button:hover {
+transform: scale(1.04) rotate(-3deg);
+box-shadow: 0 7px 22px rgba(0, 198, 255, 0.6);
+}
+
+.model-selector-wrapper {
+display: flex;
+justify-content: flex-start;
+align-items: center;
+padding-left: 6px;
+}
+
+.model-select {
+background: rgba(10, 15, 38, 0.55);
+border: 1px solid rgba(0, 198, 255, 0.15);
+color: var(--text-muted);
+padding: 7px 14px;
+border-radius: 10px;
+outline: none;
+font-size: 13px;
+font-weight: 600;
+cursor: pointer;
+transition: var(--transition-premium);
+}
+
+.model-select:focus, .model-select:hover {
+color: white;
+border-color: #00c6ff;
+background: rgba(10, 15, 38, 0.85);
+box-shadow: 0 0 12px rgba(0, 198, 255, 0.15);
+}
+
+.model-select option {
+background-color: #060816;
+color: white;
+}
+
+/* Typing Loader */
+.typing-indicator {
+display: inline-flex;
+gap: 5px;
+align-items: center;
+margin-left: 6px;
+}
+.typing-indicator span {
+width: 6px;
+height: 6px;
+background: linear-gradient(135deg, #00c6ff, #4364f7);
+border-radius: 50%;
+animation: premiumBounce 1.2s infinite ease-in-out both;
+}
+.typing-indicator span:nth-child(1) { animation-delay: -0.3s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.15s; }
+
+@keyframes premiumBounce {
+0%, 80%, 100% { transform: scale(0.3); opacity: 0.3; }
+40% { transform: scale(1.2); opacity: 1; filter: drop-shadow(0 0 4px #00c6ff); }
+}
+
+/* --- PREMIUM MEZYEN FOOTER SYSTEM --- */
+.cosmic-footer {
+height: 80px;
+width: 100%;
+background: rgba(4, 6, 15, 0.7);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border-top: 1px solid rgba(255, 255, 255, 0.05);
+box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.6);
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 0 40px;
+z-index: 50;
+}
+
+.footer-credits {
+font-size: 13.5px;
+color: var(--text-muted);
+font-weight: 500;
+}
+.footer-credits span {
+color: #00c6ff;
+font-weight: 700;
+}
+
+.footer-info-grid {
+display: flex;
+align-items: center;
+gap: 30px;
+}
+
+.footer-item {
+display: flex;
+align-items: center;
+gap: 10px;
+color: var(--text-main);
+text-decoration: none;
+font-size: 14px;
+font-weight: 500;
+transition: var(--transition-premium);
+background: rgba(255, 255, 255, 0.02);
+padding: 8px 16px;
+border-radius: 12px;
+border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.footer-item i {
+font-size: 15px;
+background: var(--primary-gradient);
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+.footer-item:hover {
+transform: translateY(-2px);
+background: rgba(0, 198, 255, 0.08);
+border-color: rgba(0, 198, 255, 0.25);
+box-shadow: 0 5px 15px rgba(0, 198, 255, 0.1);
+}
+
+/* Footer Social Icon Links */
+.footer-socials {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.social-icon-btn {
+width: 38px;
+height: 38px;
+border-radius: 50%;
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid rgba(255, 255, 255, 0.06);
+color: var(--text-muted);
+display: flex;
+align-items: center;
+justify-content: center;
+text-decoration: none;
+font-size: 15px;
+transition: var(--transition-premium);
+}
+
+.social-icon-btn:hover {
+color: white;
+transform: scale(1.1) translateY(-2px);
+box-shadow: 0 0 15px var(--glow-blue);
+}
+.social-icon-btn.yt-btn:hover { background: #ff0000; border-color: #ff3333; }
+.social-icon-btn.fb-btn:hover { background: #1877f2; border-color: #3b82f6; }
+.social-icon-btn.insta-btn:hover { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); border-color: transparent; }
+
+@media (max-width: 768px) {
+.sidebar { display: none; }
+.main-chat { padding: 0; }
+.chat-container { border-radius: 0; border: none; }
+.chat-box { padding: 24px; gap: 20px; }
+.input-wrapper { padding: 20px; }
+.message-wrapper { max-width: 100%; }
+.top-auth-bar { right: 20px; }
+.cosmic-footer { flex-direction: column; height: auto; padding: 20px; gap: 15px; text-align: center; }
+.footer-info-grid { flex-direction: column; gap: 10px; width: 100%; }
+.app-core { height: calc(100vh - 180px); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- MAIN APP BODY LAYOUT CONTAINER -->
+<div class="app-core">
+
+  <!-- AUTH OVERLAY FOR LOGIN / SIGNUP -->
+  <div id="authOverlay" class="auth-overlay">
+    <div class="auth-card" id="authCard">
+      <h2 id="authTitle">Welcome to Nexis Blink</h2>
+      <p id="authDesc">Sign in to unlock unlimited state-of-the-art AI intelligence for completely free.</p>
+      
+      <div class="auth-inputs" id="authFormInputs">
+        <input type="email" id="authEmail" class="input-field" placeholder="Enter valid email address">
+        <input type="password" id="authPassword" class="input-field" placeholder="Password">
+      </div>
+
+      <button class="submit-auth-btn" id="submitAuthBtn" onclick="handleAuthSubmit()">Sign In</button>
+
+      <div class="social-divider">OR</div>
+
+      <div class="social-btns">
+        <button class="social-btn btn-google" onclick="socialLogin('Google')"><i class="fab fa-google"></i> Google</button>
+        <button class="social-btn btn-github" onclick="socialLogin('GitHub')"><i class="fab fa-github"></i> GitHub</button>
+      </div>
+
+      <p class="switch-auth" id="switchAuthTax">Don't have an account? <span onclick="toggleAuthMode('signup')">Sign Up</span></p>
+      
+      <div class="social-divider" id="trialDivider">OR TRY OUT</div>
+      <button class="free-trial-trigger-btn" id="trialBtn" onclick="startFreeTrial()">
+        <i class="fas fa-hourglass-start"></i> Start 1-Hour Free Trial
+      </button>
+    </div>
+  </div>
+
+  <!-- TOP AUTENTICATION CONTROLS -->
+  <div class="top-auth-bar">
+    <div id="trialTimerBadge" class="trial-badge" style="display: none;">
+      <i class="fas fa-clock"></i> Trial Left: <span id="timerValue">60:00</span>
+    </div>
+    <div id="userProfileBadge" class="user-profile-badge">
+      <i class="fas fa-user-circle"></i> <span id="profileName">User</span>
+    </div>
+    <button id="topSignInBtn" class="auth-btn btn-signin" onclick="openAuthModal('signin')">Sign In</button>
+    <button id="topSignUpBtn" class="auth-btn btn-signup" onclick="openAuthModal('signup')">Sign Up</button>
+    <!-- PREMIUM LOGOUT BUTTON -->
+    <button id="topLogoutBtn" class="auth-btn btn-logout" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Log Out</button>
+  </div>
+
+  <div class="sidebar">
+    <div class="brand-logo">
+      <i class="fas fa-bolt"></i> Nexis Blink
+    </div>
+    <button class="new-chat-btn" onclick="startNewChat()">
+      <i class="fas fa-plus"></i> New Chat
+    </button>
+    <div class="history-list">
+    </div>
+  </div>
+
+  <div class="main-chat">
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="header-left">
+          <div class="logo-wrapper">
+            <img id="headerLogo" class="logo-image" src="https://scontent.ftun16-1.fna.fbcdn.net/v/t1.15752-9/740779143_1557144332443500_7977236269492838103_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=0024fc&_nc_ohc=RWA8ADJWR_wQ7kNvwFQ-bRP&_nc_oc=Adqbh_wnJq8xhKh0qZ26_s6vedjyW5cdrQGOuwVbyrjqvvYTWxHd1BURpsIH0PJozxY&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.ftun16-1.fna&_nc_ss=7a22e&oh=03_Q7cD5wGRgFFCXdxccTHDOx6F3hLshxAdprU2v0yotf89Wlukvw&oe=6A77A7AA" alt="Nexis Blink Logo">
+          </div>
+          <div class="header-info">
+            <h3>Nexis Blink</h3>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button onclick="clearAllHistory()" title="Effacer tout l'historique"><i class="fas fa-trash-alt"></i></button>
+        </div>
+      </div>
+
+      <div class="chat-box" id="chatBox">
+      </div>
+
+      <div class="input-wrapper">
+        <div class="input-container">
+          <input type="text" id="userInput" placeholder="Ask Nexis Blink anything..." autocomplete="off">
+          <button id="sendBtn"><i class="fas fa-arrow-up"></i></button>
+        </div>
+        <div class="model-selector-wrapper">
+          <select id="modelSelect" class="model-select">
+            <option value="llama-3.3-70b-versatile" selected>🤖 Llama 3.3 70B (State-of-the-Art Intelligence)</option>
+            <option value="llama-3.1-8b-instant">🚀 Llama 3.1 8B (Ultra-Fast Instant Response)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div> <!-- END OF APP CORE -->
+
+
+<!-- PREMIUM HIGH-BLUR COSMIC FOOTER -->
+<footer class="cosmic-footer">
+  <div class="footer-credits">
+    &copy; 2026 Powered by <span>Nexis Blink Engine</span>. All Rights Reserved.
+  </div>
+
+ <div class="footer-info-grid">
+  <!-- Email Contact -->
+  <a href="https://mail.google.com/mail/u/0/#inbox" class="footer-item">
+    <i class="fas fa-envelope"></i> aminosbk6@gmail.com
+  </a>
+
+  <!-- Phone Contact -->
+  <a href="tel:+216 58 664 190" class="footer-item">
+    <i class="fas fa-phone-alt"></i> +216 58 664 190
+  </a>
+
+  <!-- WhatsApp Contact -->
+  <a href="https://call.whatsapp.com/voice/52iSK8iwjex9zLgMVR2KTr" target="_blank" class="footer-item">
+    <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+  </a>
+
+  <!-- Social Icons System (fihom ken l-Facebook, Gmail, w YouTube b-nafs l-espace) -->
+  <div class="footer-socials">
+    <!-- YouTube Link -->
+    <a href="https://www.youtube.com/@Programmer660" target="_blank" class="social-icon-btn yt-btn" title="YouTube Channel">
+      <i class="fab fa-youtube"></i>
+    </a>
+    
+    <!-- Facebook Link -->
+    <a href="https://www.facebook.com/the.txc.boss/?locale=fr_FR" target="_blank" class="social-icon-btn fb-btn" title="Facebook Page">
+      <i class="fab fa-facebook-f"></i>
+    </a>
+    
+    <!-- Gmail Link -->
+    <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" class="social-icon-btn" style="background: rgba(234, 67, 53, 0.1); border-color: rgba(234, 67, 53, 0.2); color: #ea4335;" title="Send Gmail">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+</div>
+</footer>
+
+
+<script>
+const GROQ_API_KEY = "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";
+
+const chatBox = document.getElementById('chatBox');
+const userInput = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendBtn');
+const historyList = document.querySelector('.history-list');
+const modelSelect = document.getElementById('modelSelect');
+
+// Auth UI targets
+const authOverlay = document.getElementById('authOverlay');
+const authTitle = document.getElementById('authTitle');
+const authDesc = document.getElementById('authDesc');
+const submitAuthBtn = document.getElementById('submitAuthBtn');
+const switchAuthTax = document.getElementById('switchAuthTax');
+const trialBtn = document.getElementById('trialBtn');
+const trialDivider = document.getElementById('trialDivider');
+
+const trialTimerBadge = document.getElementById('trialTimerBadge');
+const timerValue = document.getElementById('timerValue');
+const userProfileBadge = document.getElementById('userProfileBadge');
+const profileName = document.getElementById('profileName');
+const topSignInBtn = document.getElementById('topSignInBtn');
+const topSignUpBtn = document.getElementById('topSignUpBtn');
+const topLogoutBtn = document.getElementById('topLogoutBtn');
+
+let currentChatId = null;
+let lastUserMessage = "";
+let isTyping = false; 
+let authMode = "signin"; 
+let timerInterval = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderHistorySidebar();
+  startNewChat(); 
+  checkUserSession();
+});
+
+/* --- SaaS Auth Engine & Anti-Glitch Trial Logic --- */
+function checkUserSession() {
+  const account = localStorage.getItem("nexis_user_account");
+  const trialStart = localStorage.getItem("nexis_trial_start");
+
+  if (account) {
+    authOverlay.classList.add('hidden');
+    topSignInBtn.style.display = 'none';
+    topSignUpBtn.style.display = 'none';
+    userProfileBadge.style.display = 'flex';
+    topLogoutBtn.style.display = 'block'; // Show Logout Button
+    profileName.innerText = account;
+    trialTimerBadge.style.display = 'none';
+  } else if (trialStart) {
+    authOverlay.classList.add('hidden');
+    topSignInBtn.style.display = 'block';
+    topSignUpBtn.style.display = 'block';
+    topLogoutBtn.style.display = 'none'; // Hide logout if it's only trial
+    startCountdown(parseInt(trialStart));
+  } else {
+    topLogoutBtn.style.display = 'none';
+    openAuthModal('signin');
+  }
+}
+
+/* PREMIUM LOGOUT LOGIC */
+function handleLogout() {
+  if (confirm("T7ebb ta3mel log out mel compte mte3ek?")) {
+    // Nettoyer localstorage lié à l'user 
+    localStorage.removeItem("nexis_user_account");
+    localStorage.removeItem("nexis_trial_start"); // Clear trial state on manual logout to clean space
+    if(timerInterval) clearInterval(timerInterval);
+    
+    // Reset UI state completely
+    userProfileBadge.style.display = 'none';
+    topLogoutBtn.style.display = 'none';
+    trialTimerBadge.style.display = 'none';
+    topSignInBtn.style.display = 'block';
+    topSignUpBtn.style.display = 'block';
+    
+    startNewChat();
+    checkUserSession();
+  }
+}
+
+function openAuthModal(mode) {
+  authOverlay.classList.remove('hidden');
+  toggleAuthMode(mode);
+}
+
+function toggleAuthMode(mode) {
+  authMode = mode;
+  const trialStart = localStorage.getItem("nexis_trial_start");
+  if (trialStart) {
+    trialBtn.style.display = 'none';
+    trialDivider.style.display = 'none';
+  } else {
+    trialBtn.style.display = 'flex';
+    trialDivider.style.display = 'flex';
+  }
+
+  if (mode === "signup") {
+    authTitle.innerText = "Create Your Account";
+    authDesc.innerText = "Get permanent free access to Nexis Blink AI instantly.";
+    submitAuthBtn.innerText = "Create Free Account";
+    switchAuthTax.innerHTML = `Already have an account? <span onclick="toggleAuthMode('signin')">Sign In</span>`;
+  } else {
+    authTitle.innerText = "Welcome to Nexis Blink";
+    authDesc.innerText = "Sign in to unlock unlimited state-of-the-art AI intelligence for completely free.";
+    submitAuthBtn.innerText = "Sign In";
+    switchAuthTax.innerHTML = `Don't have an account? <span onclick="toggleAuthMode('signup')">Sign Up</span>`;
+  }
+}
+
+function handleAuthSubmit() {
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPassword').value.trim();
+
+  if (!email || !email.includes("@") || !email.includes(".")) {
+    alert("Yezzi, 7ott compte s7i7 bech tnajjem tkammel! (ex: user@email.com)");
+    return;
+  }
+  if (pass.length < 4) {
+    alert("Password lezem fih min 4 characters!");
+    return;
+  }
+
+  localStorage.setItem("nexis_user_account", email);
+  if(timerInterval) clearInterval(timerInterval);
+  checkUserSession();
+}
+
+function socialLogin(provider) {
+  const mockEmail = `user.${provider.toLowerCase()}@gmail.com`;
+  localStorage.setItem("nexis_user_account", mockEmail);
+  if(timerInterval) clearInterval(timerInterval);
+  checkUserSession();
+}
+
+function startFreeTrial() {
+  let trialStart = localStorage.getItem("nexis_trial_start");
+  
+  if (!trialStart) {
+    trialStart = Date.now();
+    localStorage.setItem("nexis_trial_start", trialStart);
+  }
+  
+  authOverlay.classList.add('hidden');
+  startCountdown(parseInt(trialStart));
+}
+
+function startCountdown(startTime) {
+  trialTimerBadge.style.display = 'flex';
+  const oneHourInMs = 60 * 60 * 1000;
+  
+  if(timerInterval) clearInterval(timerInterval);
+
+  function updateTimer() {
+    const elapsed = Date.now() - startTime;
+    const remaining = oneHourInMs - elapsed;
+
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      trialTimerBadge.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Trial Expired`;
+      alert("Wfet el-se3a trial mte3ek! Lezem ta3mel compte walla tod5ol b-compte Google bech tkammel.");
+      openAuthModal('signup');
+      trialBtn.style.display = 'none';
+      trialDivider.style.display = 'none';
+    } else {
+      const totalSeconds = Math.floor(remaining / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      timerValue.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+  }
+
+  updateTimer();
+  timerInterval = setInterval(updateTimer, 1000);
+}
+
+/* --- Core Chat Bot Engine & Controls --- */
+function getChatHistory() {
+  const history = localStorage.getItem("Nexis_chat_history");
+  return history ? JSON.parse(history) : {};
+}
+
+function saveChatHistory(history) {
+  localStorage.setItem("Nexis_chat_history", JSON.stringify(history));
+}
+
+function startNewChat() {
+  currentChatId = "chat_" + Date.now();
+  lastUserMessage = "";
+  
+  chatBox.innerHTML = "";
+  appendMessage("Hello! Welcome to Nexis Blink AI, Kifach najem n3awnek lyom?😃", 'bot', false);
+  
+  document.querySelectorAll('.history-item').forEach(item => item.classList.remove('active'));
+}
+
+function clearAllHistory() {
+  if (confirm("T7ebb tfassa5 el-historique mta3 el-chats l-kol?")) {
+    localStorage.removeItem("Nexis_chat_history");
+    renderHistorySidebar();
+    startNewChat();
+  }
+}
+
+async function sendMessage(customMessage = null) {
+  const account = localStorage.getItem("nexis_user_account");
+  const trialStart = localStorage.getItem("nexis_trial_start");
+  const oneHourInMs = 60 * 60 * 1000;
+
+  if (!account && (!trialStart || (Date.now() - parseInt(trialStart) >= oneHourInMs))) {
+    alert("Wfet el-se3a trial mte3ek walla ma3andeksh compte! 7ott compte bech tnajjem testa3mel l-AI.");
+    openAuthModal('signup');
+    return;
+  }
+
+  if (isTyping) return; 
+  const message = customMessage ? customMessage.trim() : userInput.value.trim();
+  if (!message) return;
+
+  const selectedModel = modelSelect.value;
+  const history = getChatHistory();
+  let isBrandNewChat = false;
+
+  if (!history[currentChatId]) {
+    isBrandNewChat = true;
+    const words = message.split(" ");
+    const autoTitle = words.slice(0, 4).join(" ") + (words.length > 4 ? "..." : "");
+    
+    history[currentChatId] = {
+      title: autoTitle,
+      messages: []
+    };
+  }
+
+  if (!customMessage) {
+    appendMessage(message, 'user', false);
+    history[currentChatId].messages.push({ sender: 'user', text: message });
+    lastUserMessage = message;
+    userInput.value = '';
+  }
+
+  saveChatHistory(history);
+  if (isBrandNewChat) renderHistorySidebar();
+
+  appendMessage("Estanna Chwayya...", 'bot', false);
+  const typingMessage = chatBox.lastChild;
+  const bubble = typingMessage.querySelector('.message-text');
+  bubble.innerHTML = `Estanna Chwayya <div class="typing-indicator"><span></span><span></span><span></span></div>`;
+  autoScroll();
+
+  try {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${GROQ_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: selectedModel,
+        messages: [{ role: "user", content: message }]
+      })
+    });
+
+    const data = await response.json();
+    const botReply = data.choices[0].message.content;
+
+    typingMessage.remove();
+    
+    await appendMessage(botReply, 'bot', true);
+
+    const updatedHistory = getChatHistory();
+    if (updatedHistory[currentChatId]) {
+      updatedHistory[currentChatId].messages.push({ sender: 'bot', text: botReply });
+      saveChatHistory(updatedHistory);
+    }
+
+  } catch (error) {
+    bubble.innerText = "Samahni, Famma error fi API Connexion.";
+    console.error(error);
+  }
+}
+
+function autoScroll() {
+  chatBox.scrollTo({
+    top: chatBox.scrollHeight,
+    behavior: 'smooth'
+  });
+}
+
+function appendMessage(text, sender, animate = false) {
+  return new Promise((resolve) => {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('message-wrapper');
+    
+    if (sender === 'user') {
+      wrapper.classList.add('user-wrapper');
+    } else {
+      const logoSrc = document.getElementById('headerLogo').src;
+      const avatarImg = document.createElement('img');
+      avatarImg.classList.add('msg-avatar');
+      avatarImg.src = logoSrc;
+      avatarImg.alt = "Bot Avatar";
+      wrapper.appendChild(avatarImg);
+    }
+
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', `${sender}-message`);
+
+    const textDiv = document.createElement('div');
+    textDiv.classList.add('message-text');
+    messageDiv.appendChild(textDiv);
+
+    if (sender === 'bot' && !animate) {
+      const actionsDiv = document.createElement('div');
+      actionsDiv.classList.add('msg-actions');
+      actionsDiv.innerHTML = `<button class="action-btn" onclick="copyMessage(this)" title="Copy text"><i class="far fa-copy"></i> Copy</button> <button class="action-btn" onclick="regenerateMessage()" title="Regenerate response"><i class="fas fa-redo-alt"></i> Retry</button>`;
+      messageDiv.appendChild(actionsDiv);
+    }
+
+    wrapper.appendChild(messageDiv);
+    chatBox.appendChild(wrapper);
+
+    if (animate && sender === 'bot') {
+      isTyping = true;
+      let index = 0;
+      textDiv.textContent = "";
+
+      function type() {
+        if (index < text.length) {
+          textDiv.textContent += text.charAt(index);
+          index++;
+          autoScroll(); 
+          setTimeout(type, 12); 
+        } else {
+          isTyping = false;
+          const actionsDiv = document.createElement('div');
+          actionsDiv.classList.add('msg-actions');
+          actionsDiv.innerHTML = `<button class="action-btn" onclick="copyMessage(this)" title="Copy text"><i class="far fa-copy"></i> Copy</button> <button class="action-btn" onclick="regenerateMessage()" title="Regenerate response"><i class="fas fa-redo-alt"></i> Retry</button>`;
+          messageDiv.appendChild(actionsDiv);
+          autoScroll();
+          resolve();
+        }
+      }
+      type();
+    } else {
+      textDiv.textContent = text;
+      autoScroll();
+      resolve();
+    }
+  });
+}
+
+function renderHistorySidebar() {
+  historyList.innerHTML = "";
+  const history = getChatHistory();
+
+  Object.keys(history).reverse().forEach(chatId => {
+    const chatData = history[chatId];
+    
+    const item = document.createElement('div');
+    item.classList.add('history-item');
+    if (chatId === currentChatId) item.classList.add('active');
+    item.setAttribute('data-id', chatId);
+    
+    item.innerHTML = `<i class="far fa-comment-alt"></i> ${chatData.title}`;
+    item.addEventListener('click', () => loadChat(chatId));
+    
+    historyList.appendChild(item);
+  });
+}
+
+function loadChat(chatId) {
+  if (isTyping) return; 
+  const history = getChatHistory();
+  if (!history[chatId]) return;
+
+  currentChatId = chatId;
+  
+  document.querySelectorAll('.history-item').forEach(item => {
+    item.classList.remove('active');
+    if (item.getAttribute('data-id') === chatId) item.classList.add('active');
+  });
+
+  chatBox.innerHTML = "";
+  const messages = history[chatId].messages;
+  
+  if (messages.length === 0) {
+    appendMessage("Hello! Welcome to Nexis Blink AI, Kifach najem n3awnek lyom?😃", 'bot', false);
+  } else {
+    messages.forEach(msg => {
+      appendMessage(msg.text, msg.sender, false);
+    });
+  }
+  
+  const userMsgs = messages.filter(m => m.sender === 'user');
+  lastUserMessage = userMsgs.length > 0 ? userMsgs[userMsgs.length - 1].text : "";
+}
+
+function copyMessage(button) {
+  const textToCopy = button.closest('.message').querySelector('.message-text').innerText;
+  navigator.clipboard.writeText(textToCopy).then(() => {
+    button.innerHTML = `<i class="fas fa-check" style="color: #00ffcc"></i> Copied!`;
+    setTimeout(() => {
+      button.innerHTML = `<i class="far fa-copy"></i> Copy`;
+    }, 2000);
+  });
+}
+
+function regenerateMessage() {
+  if (lastUserMessage && !isTyping) {
+    sendMessage(lastUserMessage);
+  }
+}
+
+sendBtn.addEventListener('click', () => sendMessage());
+userInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendMessage();
+});
+</script>
+</body>
+</html>
