@@ -8,16 +8,12 @@
 
 <style>
 :root {
-/* Nexis Blink Premium Cosmic Palette */
 --bg-dark: #03050d;
 --sidebar-bg: rgba(4, 6, 15, 0.65);
 --chat-bg: rgba(6, 8, 22, 0.4); 
 --panel-bg: rgba(10, 15, 38, 0.5);
-
-/* High-End Cosmic Gradients */
 --primary-gradient: linear-gradient(135deg, #0052d4 0%, #4364f7 50%, #00c6ff 100%);
 --glow-blue: rgba(67, 100, 247, 0.25);
-
 --text-main: #f8fafc;
 --text-muted: #94a3b8;
 --glass-blur: blur(25px);
@@ -40,31 +36,23 @@ background-position: center;
 background-attachment: fixed;
 display: flex;
 flex-direction: column; 
+min-height: 100vh;
 height: 100vh;
 color: var(--text-main);
 overflow: hidden;
-position: relative;
 }
 
-/* App Main Wrapper to separate Layout from Footer */
-.app-core {
-display: flex;
-flex: 1;
-height: calc(100vh - 80px); /* Leaves space for footer */
-width: 100%;
-overflow: hidden;
-position: relative;
-}
-
-/* --- Top Authentication Bar (Clean PC Layout) --- */
+/* --- Top Authentication Bar --- */
 .top-auth-bar {
-position: absolute;
-top: 20px;
-right: 50px;
 display: flex;
 align-items: center;
+justify-content: flex-end;
 gap: 15px;
+padding: 15px 40px;
+background: rgba(4, 6, 15, 0.4);
+border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 z-index: 100;
+flex-shrink: 0;
 }
 
 .trial-badge {
@@ -121,7 +109,6 @@ border-radius: 14px;
 }
 .user-profile-badge i { color: #00c6ff; }
 
-/* Logout Button Premium Style */
 .btn-logout {
 background: rgba(239, 68, 68, 0.1);
 border: 1px solid rgba(239, 68, 68, 0.2);
@@ -134,7 +121,15 @@ color: white;
 box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
 }
 
-/* --- Auth Overlay Modal & Cards --- */
+/* App Main Wrapper */
+.app-core {
+display: flex;
+flex: 1;
+width: 100%;
+overflow: hidden;
+}
+
+/* --- Auth Overlay Modal --- */
 .auth-overlay {
 position: fixed;
 top: 0;
@@ -162,19 +157,18 @@ pointer-events: none;
 background: rgba(6, 8, 22, 0.7);
 border: 1px solid rgba(255, 255, 255, 0.08);
 border-radius: 28px;
-width: 100%;
+width: 90%;
 max-width: 440px;
-padding: 40px;
-box-shadow: 0 30px 70px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.1);
+padding: 30px;
+box-shadow: 0 30px 70px rgba(0,0,0,0.8);
 display: flex;
 flex-direction: column;
-gap: 24px;
+gap: 20px;
 text-align: center;
-position: relative;
 }
 
 .auth-card h2 {
-font-size: 26px;
+font-size: 24px;
 font-weight: 800;
 background: var(--primary-gradient);
 background-clip: text;
@@ -182,66 +176,43 @@ background-clip: text;
 -webkit-text-fill-color: transparent;
 }
 
-.auth-card p {
-color: var(--text-muted);
-font-size: 14px;
-line-height: 1.5;
-}
-
 .auth-inputs {
 display: flex;
 flex-direction: column;
-gap: 14px;
+gap: 12px;
 }
 
 .input-field {
 background: rgba(10, 15, 38, 0.6);
 border: 1px solid rgba(0, 198, 255, 0.15);
 border-radius: 14px;
-padding: 14px 18px;
+padding: 14px;
 color: white;
-font-size: 14.5px;
 outline: none;
-transition: var(--transition-premium);
-text-align: left;
-}
-.input-field:focus {
-border-color: #00c6ff;
-box-shadow: 0 0 15px rgba(0, 198, 255, 0.2);
 }
 
 .submit-auth-btn {
 background: var(--primary-gradient);
 color: white;
 border: none;
-padding: 15px;
+padding: 14px;
 border-radius: 14px;
 font-weight: 600;
-font-size: 15px;
 cursor: pointer;
-transition: var(--transition-premium);
-margin-top: 5px;
-}
-.submit-auth-btn:hover {
-box-shadow: 0 8px 25px rgba(0, 198, 255, 0.4);
-transform: translateY(-1px);
 }
 
 .social-divider {
 display: flex;
 align-items: center;
-text-align: center;
 color: var(--text-muted);
 font-size: 12px;
-margin: 5px 0;
 }
 .social-divider::before, .social-divider::after {
 content: '';
 flex: 1;
 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+margin: 0 10px;
 }
-.social-divider:not(:empty)::before { margin-right: .5em; }
-.social-divider:not(:empty)::after { margin-left: .5em; }
 
 .social-btns {
 display: flex;
@@ -256,27 +227,12 @@ color: white;
 padding: 12px;
 border-radius: 12px;
 cursor: pointer;
-font-size: 14px;
-font-weight: 600;
 display: flex;
 align-items: center;
 justify-content: center;
 gap: 10px;
-transition: var(--transition-premium);
-}
-.social-btn:hover {
-background: rgba(255, 255, 255, 0.08);
-border-color: rgba(255, 255, 255, 0.15);
 }
 
-.btn-google i { color: #ea4335; }
-.btn-github i { color: #ffffff; }
-
-.switch-auth {
-font-size: 13px;
-color: var(--text-muted);
-margin-top: 5px;
-}
 .switch-auth span {
 color: #00c6ff;
 cursor: pointer;
@@ -291,69 +247,52 @@ padding: 14px;
 border-radius: 14px;
 font-weight: 700;
 cursor: pointer;
-transition: var(--transition-premium);
 display: flex;
 align-items: center;
 justify-content: center;
 gap: 8px;
 }
-.free-trial-trigger-btn:hover {
-background: linear-gradient(135deg, #ffc107, #ff5722);
-color: #03050d;
-box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
-}
 
-/* --- Sidebar Layout --- */
+/* --- Sidebar --- */
 .sidebar {
-width: 290px;
+width: 280px;
 background-color: var(--sidebar-bg);
 backdrop-filter: var(--glass-blur);
--webkit-backdrop-filter: var(--glass-blur);
 border-right: 1px solid rgba(255, 255, 255, 0.05);
 display: flex;
 flex-direction: column;
-padding: 28px 20px;
-gap: 26px;
-z-index: 10;
+padding: 20px;
+gap: 20px;
+flex-shrink: 0;
 }
 
 .brand-logo {
-font-size: 24px;
+font-size: 22px;
 font-weight: 900;
 letter-spacing: 2px;
-display: inline-flex;
-align-items: center;
-gap: 12px;
-padding-left: 8px;
 background: var(--primary-gradient);
 background-clip: text;
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
-color: transparent;
-filter: drop-shadow(0 0 15px rgba(0, 198, 255, 0.3));
+display: flex;
+align-items: center;
+gap: 10px;
 }
 
 .new-chat-btn {
-background: linear-gradient(135deg, rgba(67, 100, 247, 0.1), rgba(0, 198, 255, 0.05));
+background: rgba(0, 198, 255, 0.05);
 border: 1px solid rgba(0, 198, 255, 0.15);
 color: white;
-padding: 14px 18px;
-border-radius: 16px;
+padding: 12px;
+border-radius: 12px;
 cursor: pointer;
 font-weight: 600;
 display: flex;
 align-items: center;
-gap: 12px;
-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-transition: var(--transition-premium);
+justify-content: center;
+gap: 10px;
 }
-
-.new-chat-btn:hover {
-background: var(--primary-gradient);
-border-color: transparent;
-transform: translateY(-2px);
-box-shadow: 0 8px 25px rgba(67, 100, 247, 0.35);
-}
+.new-chat-btn:hover { background: var(--primary-gradient); }
 
 .history-list {
 flex: 1;
@@ -364,10 +303,9 @@ overflow-y: auto;
 }
 
 .history-item {
-padding: 14px 166px;
-padding: 14px 16px;
-border-radius: 14px;
-font-size: 14.5px;
+padding: 12px;
+border-radius: 10px;
+font-size: 14px;
 color: var(--text-muted);
 cursor: pointer;
 white-space: nowrap;
@@ -375,50 +313,41 @@ overflow: hidden;
 text-overflow: ellipsis;
 display: flex;
 align-items: center;
-gap: 12px;
-background: rgba(255, 255, 255, 0.01);
+gap: 10px;
 border: 1px solid transparent;
-transition: var(--transition-premium);
 }
-
 .history-item:hover, .history-item.active {
 background: rgba(67, 100, 247, 0.12);
 color: white;
 border-color: rgba(67, 100, 247, 0.25);
-box-shadow: inset 0 0 10px rgba(67, 100, 247, 0.15);
 }
 
-/* --- Main Chat Container --- */
+/* --- Main Chat --- */
 .main-chat {
 flex: 1;
 display: flex;
 justify-content: center;
 align-items: center;
-padding: 70px 50px 30px 50px; 
-position: relative;
+padding: 20px;
+overflow: hidden;
 }
 
 .chat-container {
 width: 100%;
-max-width: 1050px;
+max-width: 1000px;
 height: 100%;
 background-color: var(--chat-bg);
 backdrop-filter: var(--glass-blur);
--webkit-backdrop-filter: var(--glass-blur);
-border-radius: 36px;
+border-radius: 24px;
 border: 1px solid rgba(255, 255, 255, 0.06);
-box-shadow:
-0 40px 100px rgba(0, 0, 0, 0.55),
-inset 0 1px 1px rgba(255, 255, 255, 0.1);
 display: flex;
 flex-direction: column;
 overflow: hidden;
 }
 
-/* Header Premium Style */
 .chat-header {
-padding: 24px 40px;
-background: linear-gradient(180deg, rgba(4, 6, 15, 0.7) 0%, transparent 100%);
+padding: 15px 25px;
+background: rgba(4, 6, 15, 0.4);
 border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 display: flex;
 align-items: center;
@@ -426,395 +355,154 @@ justify-content: space-between;
 }
 
 .header-left { display: flex; align-items: center; }
+.logo-wrapper { width: 40px; height: 40px; margin-right: 12px; }
+.logo-image { width: 100%; height: 100%; border-radius: 10px; object-fit: cover; border: 1px solid #00c6ff; }
+.header-info h3 { font-size: 16px; color: white; }
 
-.logo-wrapper {
-position: relative;
-width: 48px;
-height: 48px;
-margin-right: 16px;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-.logo-image {
-width: 100%;
-height: 100%;
-border-radius: 14px;
-object-fit: cover;
-border: 1.5px solid #00c6ff;
-box-shadow: 0 0 15px rgba(0, 198, 255, 0.4);
-z-index: 2;
-}
-
-.logo-wrapper::before {
-content: '';
-position: absolute;
-width: 100%;
-height: 100%;
-border: 1.5px solid #00c6ff;
-border-radius: 14px;
-z-index: 1;
-opacity: 0;
-animation: radarPulse 2.5s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
-}
-
-@keyframes radarPulse {
-0% { transform: scale(1); opacity: 0.6; }
-100% { transform: scale(1.35); opacity: 0; }
-}
-
-.header-info h3 { font-size: 19px; font-weight: 700; color: white; letter-spacing: -0.3px;}
 .header-actions button {
 background: rgba(255, 255, 255, 0.02);
 border: 1px solid rgba(255, 255, 255, 0.05);
 color: var(--text-muted);
 cursor: pointer;
-font-size: 15px;
-padding: 11px;
-border-radius: 12px;
-transition: var(--transition-premium);
+padding: 8px;
+border-radius: 8px;
 }
 
-.header-actions button:hover { color: #ff3366; background: rgba(255, 51, 102, 0.15); border-color: rgba(255, 51, 102, 0.3); }
-
-/* Chat Box Area */
 .chat-box {
 flex: 1;
-padding: 40px 50px;
+padding: 20px;
 overflow-y: auto;
 display: flex;
 flex-direction: column;
-gap: 24px;
-scroll-behavior: smooth;
+gap: 20px;
 }
 
-.chat-box::-webkit-scrollbar { width: 4px; }
-.chat-box::-webkit-scrollbar-thumb { background-color: rgba(0, 198, 255, 0.2); border-radius: 10px; }
+.message-wrapper { display: flex; width: 100%; gap: 12px; }
+.user-wrapper { justify-content: flex-end; }
+.message { display: flex; flex-direction: column; max-width: 80%; }
+.message-text { padding: 14px 18px; border-radius: 16px; font-size: 14.5px; line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
+.bot-message .message-text { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); color: #f1f5f9; border-top-left-radius: 4px; }
+.user-message .message-text { background: var(--primary-gradient); color: white; border-top-right-radius: 4px; }
 
-/* Chat Bubbles Layout */
-.message-wrapper {
-display: flex;
-width: 100%;
-gap: 14px;
-align-items: flex-start;
-animation: elegantSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-opacity: 0;
-transform: translateY(18px);
-}
-
-.user-wrapper {
-justify-content: flex-end;
-}
-
-@keyframes elegantSlideUp {
-to { opacity: 1; transform: translateY(0); }
-}
-
-.msg-avatar {
-width: 36px;
-height: 36px;
-border-radius: 10px;
-border: 1px solid #00c6ff;
-object-fit: cover;
-box-shadow: 0 0 10px rgba(0, 198, 255, 0.3);
-flex-shrink: 0;
-}
-
-.message {
-display: flex;
-flex-direction: column;
-max-width: 75%;
-}
-
-.message-text {
-padding: 16px 22px;
-border-radius: 22px;
-font-size: 15px;
-line-height: 1.65;
-word-break: break-word;
-white-space: pre-wrap; 
-}
-
-.bot-message .message-text {
-background-color: rgba(15, 23, 42, 0.45); 
-backdrop-filter: blur(15px);
--webkit-backdrop-filter: blur(15px);
-border: 1px solid rgba(255, 255, 255, 0.08);
-color: #f1f5f9;
-border-top-left-radius: 4px;
-box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
-
-.user-message .message-text {
-background: var(--primary-gradient);
-color: white;
-border-top-right-radius: 4px;
-box-shadow: 0 10px 25px rgba(67, 100, 247, 0.3);
-}
-
-/* Input Wrapper */
 .input-wrapper {
-padding: 20px 50px 35px 50px;
-background: linear-gradient(180deg, transparent 0%, rgba(3, 5, 13, 0.85) 100%);
+padding: 15px 20px;
+background: rgba(3, 5, 13, 0.6);
 display: flex;
 flex-direction: column;
-gap: 14px;
+gap: 10px;
 }
 
 .input-container {
 display: flex;
 align-items: center;
 background-color: var(--panel-bg);
-backdrop-filter: blur(15px);
 border: 1px solid rgba(0, 198, 255, 0.15);
-border-radius: 24px;
-padding: 10px 12px 10px 24px;
-box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-transition: var(--transition-premium);
+border-radius: 18px;
+padding: 8px 8px 8px 16px;
 }
 
-.input-container:focus-within {
-border-color: #00c6ff;
-background-color: rgba(10, 15, 38, 0.7);
-box-shadow: 0 0 35px rgba(0, 198, 255, 0.25);
-transform: translateY(-1px);
-}
-
-.input-container input {
-flex: 1;
-padding: 12px 0;
-background: none;
-border: none;
-color: white;
-font-size: 15.5px;
-outline: none;
-}
-
-.input-container input::placeholder { color: var(--text-muted); opacity: 0.6; }
-
-.input-container button {
-background: var(--primary-gradient);
-color: white;
-border: none;
-width: 46px;
-height: 46px;
-border-radius: 16px;
-cursor: pointer;
-display: flex;
-justify-content: center;
-align-items: center;
-box-shadow: 0 5px 15px rgba(0, 198, 255, 0.4);
-transition: var(--transition-premium);
-}
-
-.input-container button:hover {
-transform: scale(1.04) rotate(-3deg);
-box-shadow: 0 7px 22px rgba(0, 198, 255, 0.6);
-}
-
-.model-selector-wrapper {
-display: flex;
-justify-content: flex-start;
-align-items: center;
-padding-left: 6px;
-}
+.input-container input { flex: 1; background: none; border: none; color: white; font-size: 15px; outline: none; }
+.input-container button { background: var(--primary-gradient); color: white; border: none; width: 40px; height: 40px; border-radius: 12px; cursor: pointer; }
 
 .model-select {
-background: rgba(10, 15, 38, 0.55);
+background: rgba(10, 15, 38, 0.6);
 border: 1px solid rgba(0, 198, 255, 0.15);
 color: var(--text-muted);
-padding: 7px 14px;
-border-radius: 10px;
+padding: 6px 12px;
+border-radius: 8px;
+font-size: 12px;
 outline: none;
-font-size: 13px;
-font-weight: 600;
 cursor: pointer;
-transition: var(--transition-premium);
-}
-
-.model-select:focus, .model-select:hover {
-color: white;
-border-color: #00c6ff;
-background: rgba(10, 15, 38, 0.85);
-box-shadow: 0 0 12px rgba(0, 198, 255, 0.15);
-}
-
-.model-select option {
-background-color: #060816;
-color: white;
 }
 
 /* Typing Loader */
-.typing-indicator {
-display: inline-flex;
-gap: 5px;
-align-items: center;
-margin-left: 6px;
-}
-.typing-indicator span {
-width: 6px;
-height: 6px;
-background: linear-gradient(135deg, #00c6ff, #4364f7);
-border-radius: 50%;
-animation: premiumBounce 1.2s infinite ease-in-out both;
-}
+.typing-indicator { display: inline-flex; gap: 4px; align-items: center; }
+.typing-indicator span { width: 6px; height: 6px; background: #00c6ff; border-radius: 50%; animation: bounce 1.2s infinite ease-in-out both; }
 .typing-indicator span:nth-child(1) { animation-delay: -0.3s; }
 .typing-indicator span:nth-child(2) { animation-delay: -0.15s; }
+@keyframes bounce { 0%, 80%, 100% { transform: scale(0.3); opacity: 0.3; } 40% { transform: scale(1.2); opacity: 1; } }
 
-@keyframes premiumBounce {
-0%, 80%, 100% { transform: scale(0.3); opacity: 0.3; }
-40% { transform: scale(1.2); opacity: 1; filter: drop-shadow(0 0 4px #00c6ff); }
-}
-
-/* --- PREMIUM HIGH-BLUR COSMIC FOOTER --- */
+/* --- Footer --- */
 .cosmic-footer {
-height: 80px;
-width: 100%;
-background: rgba(4, 6, 15, 0.7);
-backdrop-filter: blur(20px);
--webkit-backdrop-filter: blur(20px);
+padding: 15px 40px;
+background: rgba(4, 6, 15, 0.8);
 border-top: 1px solid rgba(255, 255, 255, 0.05);
-box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.6);
 display: flex;
 align-items: center;
 justify-content: space-between;
-padding: 0 40px;
+gap: 15px;
+flex-shrink: 0;
 z-index: 50;
 }
 
-.footer-credits {
-font-size: 13.5px;
-color: var(--text-muted);
-font-weight: 500;
-}
-.footer-credits span {
-color: #00c6ff;
-font-weight: 700;
-}
+.footer-credits { font-size: 12px; color: var(--text-muted); }
+.footer-credits span { color: #00c6ff; font-weight: 700; }
+.footer-info-grid { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+.footer-item { display: flex; align-items: center; gap: 8px; color: var(--text-main); text-decoration: none; font-size: 13px; background: rgba(255, 255, 255, 0.02); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.04); }
+.footer-socials { display: flex; align-items: center; gap: 8px; }
+.social-icon-btn { width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); color: var(--text-muted); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 13px; }
 
-.footer-info-grid {
-display: flex;
-align-items: center;
-gap: 30px;
-}
-
-.footer-item {
-display: flex;
-align-items: center;
-gap: 10px;
-color: var(--text-main);
-text-decoration: none;
-font-size: 14px;
-font-weight: 500;
-transition: var(--transition-premium);
-background: rgba(255, 255, 255, 0.02);
-padding: 8px 16px;
-border-radius: 12px;
-border: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.footer-item i {
-font-size: 15px;
-background: var(--primary-gradient);
-background-clip: text;
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-}
-
-.footer-item:hover {
-transform: translateY(-2px);
-background: rgba(0, 198, 255, 0.08);
-border-color: rgba(0, 198, 255, 0.25);
-box-shadow: 0 5px 15px rgba(0, 198, 255, 0.1);
-}
-
-/* Footer Social Icon Links */
-.footer-socials {
-display: flex;
-align-items: center;
-gap: 12px;
-}
-
-.social-icon-btn {
-width: 38px;
-height: 38px;
-border-radius: 50%;
-background: rgba(255, 255, 255, 0.03);
-border: 1px solid rgba(255, 255, 255, 0.06);
-color: var(--text-muted);
-display: flex;
-align-items: center;
-justify-content: center;
-text-decoration: none;
-font-size: 15px;
-transition: var(--transition-premium);
-}
-
-.social-icon-btn:hover {
-color: white;
-transform: scale(1.1) translateY(-2px);
-box-shadow: 0 0 15px var(--glow-blue);
-}
-.social-icon-btn.yt-btn:hover { background: #ff0000; border-color: #ff3333; }
-.social-icon-btn.fb-btn:hover { background: #1877f2; border-color: #3b82f6; }
-
-/* --- 📱 RESPONSIVE MEDIA WORK SYSTEM (ANTI-GLITCH ANDROID) --- */
+/* --- 📱 ANDROID & MOBILE RESPONSIVE AUTO-SIZE --- */
 @media (max-width: 768px) {
 body {
-overflow-y: auto; /* Yakhlet el-user ya3mel scroll ken l-ecran sghira barcha */
 height: auto;
 min-height: 100vh;
+overflow-y: auto;
 }
 
-/* El-barre d'authentification twalli structurelle mel fouq s7i7a */
 .top-auth-bar {
-position: relative;
-top: 0;
-right: 0;
-width: 100%;
-padding: 15px 20px;
+padding: 12px;
 justify-content: center;
-background: rgba(4, 6, 15, 0.8);
-border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-backdrop-filter: blur(10px);
+flex-wrap: wrap;
+gap: 8px;
+}
+
+.auth-btn {
+padding: 8px 14px;
+font-size: 12px;
+flex: 1;
+text-align: center;
+max-width: 140px;
 }
 
 .app-core {
 flex-direction: column;
-height: auto; 
 overflow: visible;
 }
 
-.sidebar { display: none; } /* Trassilo fil-chat direct */
+.sidebar { display: none; }
 
-.main-chat { 
-padding: 10px; 
-height: 70vh; /* Ya3ti blassa fix lil chat bech maya3melsh crash m3a l-clavier Android */
-min-height: 450px;
+.main-chat {
+padding: 10px;
+height: calc(100vh - 180px); /* Auto-resize sans overlapping avec le clavier */
+min-height: 460px;
 }
 
-.chat-container { 
-border-radius: 20px; 
-border: 1px solid rgba(255, 255, 255, 0.06); 
+.chat-container {
+border-radius: 16px;
+height: 100%;
 }
 
-.chat-box { padding: 16px; gap: 16px; }
-.input-wrapper { padding: 16px; }
-.message-wrapper { max-width: 100%; }
+.chat-box { padding: 12px; gap: 12px; }
+.message-text { font-size: 13.5px; padding: 10px 14px; }
+.input-wrapper { padding: 10px; }
 
-/* Footer fix auto-align fluid */
-.cosmic-footer { 
-flex-direction: column; 
-height: auto; 
-padding: 20px; 
-gap: 15px; 
-text-align: center; 
+.cosmic-footer {
+flex-direction: column;
+padding: 20px 15px;
+text-align: center;
+height: auto;
 }
-.footer-info-grid { 
-flex-direction: column; 
-gap: 10px; 
-width: 100%; 
+
+.footer-info-grid {
+flex-direction: column;
+width: 100%;
+gap: 10px;
+}
+
+.footer-item {
+width: 100%;
+justify-content: center;
 }
 }
 </style>
@@ -824,7 +512,7 @@ width: 100%;
 
 <div class="top-auth-bar">
   <div id="trialTimerBadge" class="trial-badge" style="display: none;">
-    <i class="fas fa-clock"></i> Trial Left: <span id="timerValue">60:00</span>
+    <i class="fas fa-clock"></i> <span id="timerValue">60:00</span>
   </div>
   <div id="userProfileBadge" class="user-profile-badge">
     <i class="fas fa-user-circle"></i> <span id="profileName">User</span>
@@ -839,38 +527,28 @@ width: 100%;
   <div id="authOverlay" class="auth-overlay">
     <div class="auth-card" id="authCard">
       <h2 id="authTitle">Welcome to Nexis Blink</h2>
-      <p id="authDesc">Sign in to unlock unlimited state-of-the-art AI intelligence for completely free.</p>
+      <p id="authDesc">Sign in to unlock unlimited AI intelligence for completely free.</p>
       
       <div class="auth-inputs" id="authFormInputs">
-        <input type="email" id="authEmail" class="input-field" placeholder="Enter valid email address">
+        <input type="email" id="authEmail" class="input-field" placeholder="Email address">
         <input type="password" id="authPassword" class="input-field" placeholder="Password">
       </div>
 
       <button class="submit-auth-btn" id="submitAuthBtn" onclick="handleAuthSubmit()">Sign In</button>
-
       <div class="social-divider">OR</div>
-
       <div class="social-btns">
         <button class="social-btn btn-google" onclick="socialLogin('Google')"><i class="fab fa-google"></i> Google</button>
         <button class="social-btn btn-github" onclick="socialLogin('GitHub')"><i class="fab fa-github"></i> GitHub</button>
       </div>
-
       <p class="switch-auth" id="switchAuthTax">Don't have an account? <span onclick="toggleAuthMode('signup')">Sign Up</span></p>
-      
-      <div class="social-divider" id="trialDivider">OR TRY OUT</div>
-      <button class="free-trial-trigger-btn" id="trialBtn" onclick="startFreeTrial()">
-        <i class="fas fa-hourglass-start"></i> Start 1-Hour Free Trial
-      </button>
+      <div class="social-divider" id="trialDivider">OR</div>
+      <button class="free-trial-trigger-btn" id="trialBtn" onclick="startFreeTrial()">Start Trial</button>
     </div>
   </div>
 
   <div class="sidebar">
-    <div class="brand-logo">
-      <i class="fas fa-bolt"></i> Nexis Blink
-    </div>
-    <button class="new-chat-btn" onclick="startNewChat()">
-      <i class="fas fa-plus"></i> New Chat
-    </button>
+    <div class="brand-logo"><i class="fas fa-bolt"></i> Nexis Blink</div>
+    <button class="new-chat-btn" onclick="startNewChat()"><i class="fas fa-plus"></i> New Chat</button>
     <div class="history-list"></div>
   </div>
 
@@ -879,14 +557,12 @@ width: 100%;
       <div class="chat-header">
         <div class="header-left">
           <div class="logo-wrapper">
-            <img id="headerLogo" class="logo-image" src="https://scontent.ftun16-1.fna.fbcdn.net/v/t1.15752-9/740779143_1557144332443500_7977236269492838103_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=0024fc&_nc_ohc=RWA8ADJWR_wQ7kNvwFQ-bRP&_nc_oc=Adqbh_wnJq8xhKh0qZ26_s6vedjyW5cdrQGOuwVbyrjqvvYTWxHd1BURpsIH0PJozxY&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.ftun16-1.fna&_nc_ss=7a22e&oh=03_Q7cD5wGRgFFCXdxccTHDOx6F3hLshxAdprU2v0yotf89Wlukvw&oe=6A77A7AA" alt="Nexis Blink Logo">
+            <img id="headerLogo" class="logo-image" src="https://scontent.ftun16-1.fna.fbcdn.net/v/t1.15752-9/740779143_1557144332443500_7977236269492838103_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=0024fc&_nc_ohc=RWA8ADJWR_wQ7kNvwFQ-bRP&_nc_oc=Adqbh_wnJq8xhKh0qZ26_s6vedjyW5cdrQGOuwVbyrjqvvYTWxHd1BURpsIH0PJozxY&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent.ftun16-1.fna&_nc_ss=7a22e&oh=03_Q7cD5wGRgFFCXdxccTHDOx6F3hLshxAdprU2v0yotf89Wlukvw&oe=6A77A7AA" alt="Logo">
           </div>
-          <div class="header-info">
-            <h3>Nexis Blink</h3>
-          </div>
+          <div class="header-info"><h3>Nexis Blink</h3></div>
         </div>
         <div class="header-actions">
-          <button onclick="clearAllHistory()" title="Effacer tout l'historique"><i class="fas fa-trash-alt"></i></button>
+          <button onclick="clearAllHistory()"><i class="fas fa-trash-alt"></i></button>
         </div>
       </div>
 
@@ -894,13 +570,13 @@ width: 100%;
 
       <div class="input-wrapper">
         <div class="input-container">
-          <input type="text" id="userInput" placeholder="Ask Nexis Blink anything..." autocomplete="off">
+          <input type="text" id="userInput" placeholder="Ask Nexis Blink..." autocomplete="off">
           <button id="sendBtn"><i class="fas fa-arrow-up"></i></button>
         </div>
-        <div class="model-selector-wrapper">
+        <div>
           <select id="modelSelect" class="model-select">
-            <option value="llama-3.3-70b-versatile" selected>🤖 Llama 3.3 70B (State-of-the-Art Intelligence)</option>
-            <option value="llama-3.1-8b-instant">🚀 Llama 3.1 8B (Ultra-Fast Instant Response)</option>
+            <option value="llama-3.3-70b-versatile" selected>🤖 Llama 3.3 70B</option>
+            <option value="llama-3.1-8b-instant">🚀 Llama 3.1 8B</option>
           </select>
         </div>
       </div>
@@ -910,35 +586,14 @@ width: 100%;
 </div>
 
 <footer class="cosmic-footer">
-  <div class="footer-credits">
-    &copy; 2026 Powered by <span>Nexis Blink Engine</span>. All Rights Reserved.
-  </div>
-
+  <div class="footer-credits">&copy; 2026 Powered by <span>Nexis Blink Engine</span>.</div>
   <div class="footer-info-grid">
-    <a href="https://mail.google.com/mail/u/0/#inbox" class="footer-item">
-      <i class="fas fa-envelope"></i> aminosbk6@gmail.com
-    </a>
-
-    <a href="tel:+216 58 664 190" class="footer-item">
-      <i class="fas fa-phone-alt"></i> +216 58 664 190
-    </a>
-
-    <a href="https://call.whatsapp.com/voice/52iSK8iwjex9zLgMVR2KTr" target="_blank" class="footer-item">
-      <i class="fab fa-whatsapp"></i> Chat on WhatsApp
-    </a>
-
+    <a href="mailto:aminosbk6@gmail.com" class="footer-item"><i class="fas fa-envelope"></i> aminosbk6@gmail.com</a>
+    <a href="tel:+21658664190" class="footer-item"><i class="fas fa-phone-alt"></i> +216 58 664 190</a>
+    <a href="https://call.whatsapp.com/voice/52iSK8iwjex9zLgMVR2KTr" target="_blank" class="footer-item"><i class="fab fa-whatsapp"></i> WhatsApp</a>
     <div class="footer-socials">
-      <a href="https://www.youtube.com/@Programmer660" target="_blank" class="social-icon-btn yt-btn" title="YouTube Channel">
-        <i class="fab fa-youtube"></i>
-      </a>
-      
-      <a href="https://www.facebook.com/the.txc.boss/?locale=fr_FR" target="_blank" class="social-icon-btn fb-btn" title="Facebook Page">
-        <i class="fab fa-facebook-f"></i>
-      </a>
-      
-      <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank" class="social-icon-btn" style="background: rgba(234, 67, 53, 0.1); border-color: rgba(234, 67, 53, 0.2); color: #ea4335;" title="Send Gmail">
-        <i class="fas fa-envelope"></i>
-      </a>
+      <a href="https://www.youtube.com/@Programmer660" target="_blank" class="social-icon-btn"><i class="fab fa-youtube"></i></a>
+      <a href="https://www.facebook.com/the.txc.boss/?locale=fr_FR" target="_blank" class="social-icon-btn"><i class="fab fa-facebook-f"></i></a>
     </div>
   </div>
 </footer>
@@ -951,7 +606,6 @@ const userInput = document.getElementById('userInput');
 const sendBtn = document.getElementById('sendBtn');
 const historyList = document.querySelector('.history-list');
 const modelSelect = document.getElementById('modelSelect');
-
 const authOverlay = document.getElementById('authOverlay');
 const authTitle = document.getElementById('authTitle');
 const authDesc = document.getElementById('authDesc');
@@ -959,7 +613,6 @@ const submitAuthBtn = document.getElementById('submitAuthBtn');
 const switchAuthTax = document.getElementById('switchAuthTax');
 const trialBtn = document.getElementById('trialBtn');
 const trialDivider = document.getElementById('trialDivider');
-
 const trialTimerBadge = document.getElementById('trialTimerBadge');
 const timerValue = document.getElementById('timerValue');
 const userProfileBadge = document.getElementById('userProfileBadge');
@@ -980,16 +633,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   sendBtn.addEventListener('click', () => sendMessage());
   userInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      sendMessage();
-    }
+    if (e.key === 'Enter') sendMessage();
   });
 });
 
 function checkUserSession() {
   const account = localStorage.getItem("nexis_user_account");
   const trialStart = localStorage.getItem("nexis_trial_start");
-
   if (account) {
     authOverlay.classList.add('hidden');
     topSignInBtn.style.display = 'none';
@@ -1011,18 +661,10 @@ function checkUserSession() {
 }
 
 function handleLogout() {
-  if (confirm("T7ebb ta3mel log out mel compte mte3ek?")) {
+  if (confirm("T7ebb ta3mel log out?")) {
     localStorage.removeItem("nexis_user_account");
     localStorage.removeItem("nexis_trial_start"); 
     if(timerInterval) clearInterval(timerInterval);
-    
-    userProfileBadge.style.display = 'none';
-    topLogoutBtn.style.display = 'none';
-    trialTimerBadge.style.display = 'none';
-    topSignInBtn.style.display = 'block';
-    topSignUpBtn.style.display = 'block';
-    
-    startNewChat();
     checkUserSession();
   }
 }
@@ -1035,22 +677,17 @@ function openAuthModal(mode) {
 function toggleAuthMode(mode) {
   authMode = mode;
   const trialStart = localStorage.getItem("nexis_trial_start");
-  if (trialStart) {
-    trialBtn.style.display = 'none';
-    trialDivider.style.display = 'none';
-  } else {
-    trialBtn.style.display = 'flex';
-    trialDivider.style.display = 'flex';
-  }
+  trialBtn.style.display = trialStart ? 'none' : 'flex';
+  if(trialDivider) trialDivider.style.display = trialStart ? 'none' : 'flex';
 
   if (mode === "signup") {
     authTitle.innerText = "Create Your Account";
-    authDesc.innerText = "Get permanent free access to Nexis Blink AI instantly.";
+    authDesc.innerText = "Get permanent free access instantly.";
     submitAuthBtn.innerText = "Create Free Account";
     switchAuthTax.innerHTML = `Already have an account? <span onclick="toggleAuthMode('signin')">Sign In</span>`;
   } else {
     authTitle.innerText = "Welcome to Nexis Blink";
-    authDesc.innerText = "Sign in to unlock unlimited state-of-the-art AI intelligence for completely free.";
+    authDesc.innerText = "Sign in to unlock unlimited AI intelligence.";
     submitAuthBtn.innerText = "Sign In";
     switchAuthTax.innerHTML = `Don't have an account? <span onclick="toggleAuthMode('signup')">Sign Up</span>`;
   }
@@ -1059,59 +696,37 @@ function toggleAuthMode(mode) {
 function handleAuthSubmit() {
   const email = document.getElementById('authEmail').value.trim();
   const pass = document.getElementById('authPassword').value.trim();
-
-  if (!email || !email.includes("@") || !email.includes(".")) {
-    alert("Yezzi, 7ott compte s7i7 bech tnajjem tkammel! (ex: user@email.com)");
+  if (!email.includes("@") || pass.length < 4) {
+    alert("Thabbet mel email/password mte3ek!");
     return;
   }
-  if (pass.length < 4) {
-    alert("Password lezem fih min 4 characters!");
-    return;
-  }
-
   localStorage.setItem("nexis_user_account", email);
-  if(timerInterval) clearInterval(timerInterval);
   checkUserSession();
 }
 
 function socialLogin(provider) {
-  const mockEmail = `user.${provider.toLowerCase()}@gmail.com`;
-  localStorage.setItem("nexis_user_account", mockEmail);
-  if(timerInterval) clearInterval(timerInterval);
+  localStorage.setItem("nexis_user_account", `user.${provider.toLowerCase()}@nexis.com`);
   checkUserSession();
 }
 
 function startFreeTrial() {
-  let trialStart = localStorage.getItem("nexis_trial_start");
-  if (!trialStart) {
-    trialStart = Date.now();
-    localStorage.setItem("nexis_trial_start", trialStart);
-  }
+  localStorage.setItem("nexis_trial_start", Date.now());
   authOverlay.classList.add('hidden');
-  startCountdown(parseInt(trialStart));
+  checkUserSession();
 }
 
 function startCountdown(startTime) {
   trialTimerBadge.style.display = 'flex';
-  const oneHourInMs = 60 * 60 * 1000;
   if(timerInterval) clearInterval(timerInterval);
-
   function updateTimer() {
-    const elapsed = Date.now() - startTime;
-    const remaining = oneHourInMs - elapsed;
-
+    const remaining = (60 * 60 * 1000) - (Date.now() - startTime);
     if (remaining <= 0) {
       clearInterval(timerInterval);
-      trialTimerBadge.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Trial Expired`;
-      alert("Wfet el-se3a trial mte3ek! Lezem ta3mel compte.");
+      alert("Trial Expired!");
       openAuthModal('signup');
-      trialBtn.style.display = 'none';
-      trialDivider.style.display = 'none';
     } else {
-      const totalSeconds = Math.floor(remaining / 1000);
-      const minutes = Math.floor(totalSeconds / 60);
-      const seconds = totalSeconds % 60;
-      timerValue.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      const secs = Math.floor(remaining / 1000);
+      timerValue.innerText = `${Math.floor(secs / 60)}:${(secs % 60 < 10 ? '0' : '')}${secs % 60}`;
     }
   }
   updateTimer();
@@ -1131,11 +746,10 @@ function startNewChat() {
   currentChatId = "chat_" + Date.now();
   chatBox.innerHTML = "";
   appendMessage("Hello! Welcome to Nexis Blink AI, Kifach najem n3awnek lyom?😃", 'bot');
-  document.querySelectorAll('.history-item').forEach(item => item.classList.remove('active'));
 }
 
 function clearAllHistory() {
-  if (confirm("T7ebb tfassa5 el-historique mta3 el-chats l-kol?")) {
+  if (confirm("T7ebb tfassa5 el-historique?")) {
     localStorage.removeItem("Nexis_chat_history");
     renderHistorySidebar();
     startNewChat();
@@ -1148,8 +762,7 @@ function appendMessage(text, sender) {
   if (sender === 'user') wrapper.classList.add('user-wrapper');
 
   const bubble = document.createElement('div');
-  bubble.classList.add('message');
-  bubble.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+  bubble.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
 
   const msgText = document.createElement('div');
   msgText.classList.add('message-text');
@@ -1158,10 +771,6 @@ function appendMessage(text, sender) {
   bubble.appendChild(msgText);
   wrapper.appendChild(bubble);
   chatBox.appendChild(wrapper);
-  autoScroll();
-}
-
-function autoScroll() {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
@@ -1183,25 +792,11 @@ function loadChat(id) {
   chatBox.innerHTML = "";
   renderHistorySidebar();
   const history = getChatHistory();
-  if (history[id]) {
-    history[id].messages.forEach(msg => {
-      appendMessage(msg.text, msg.sender);
-    });
-  }
+  if (history[id]) history[id].messages.forEach(msg => appendMessage(msg.text, msg.sender));
 }
 
 async function sendMessage() {
-  const account = localStorage.getItem("nexis_user_account");
-  const trialStart = localStorage.getItem("nexis_trial_start");
-  const oneHourInMs = 60 * 60 * 1000;
-
-  if (!account && (!trialStart || (Date.now() - parseInt(trialStart) >= oneHourInMs))) {
-    alert("Wfet el-se3a trial mte3ek walla ma3andeksh compte! 7ott compte bech tnajjem testa3mel l-AI.");
-    openAuthModal('signup');
-    return;
-  }
-
-  if (isTyping) return; 
+  if (isTyping) return;
   const message = userInput.value.trim();
   if (!message) return;
 
@@ -1212,9 +807,7 @@ async function sendMessage() {
 
   if (!history[currentChatId]) {
     isBrandNewChat = true;
-    const words = message.split(" ");
-    const autoTitle = words.slice(0, 4).join(" ") + (words.length > 4 ? "..." : "");
-    history[currentChatId] = { title: autoTitle, messages: [] };
+    history[currentChatId] = { title: message.split(" ").slice(0, 3).join(" "), messages: [] };
   }
 
   appendMessage(message, 'user');
@@ -1223,17 +816,11 @@ async function sendMessage() {
   saveChatHistory(history);
   if (isBrandNewChat) renderHistorySidebar();
 
-  const wrapper = document.createElement('div');
-  wrapper.classList.add('message-wrapper');
-  const bubble = document.createElement('div');
-  bubble.classList.add('message', 'bot-message');
-  const msgText = document.createElement('div');
-  msgText.classList.add('message-text');
-  msgText.innerHTML = `Estanna Chwayya <div class="typing-indicator"><span></span><span></span><span></span></div>`;
-  bubble.appendChild(msgText);
-  wrapper.appendChild(bubble);
-  chatBox.appendChild(wrapper);
-  autoScroll();
+  const loader = document.createElement('div');
+  loader.classList.add('message-wrapper');
+  loader.innerHTML = `<div class="message bot-message"><div class="message-text">Nexis thinking... <div class="typing-indicator"><span></span><span></span><span></span></div></div></div>`;
+  chatBox.appendChild(loader);
+  chatBox.scrollTop = chatBox.scrollHeight;
 
   const apiMessages = history[currentChatId].messages.map(m => ({
     role: m.sender === 'user' ? 'user' : 'assistant',
@@ -1247,32 +834,24 @@ async function sendMessage() {
         "Authorization": `Bearer ${GROQ_API_KEY}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        model: selectedModel,
-        messages: apiMessages
-      })
+      body: JSON.stringify({ model: selectedModel, messages: apiMessages })
     });
-
     const data = await response.json();
-    chatBox.removeChild(wrapper); 
+    chatBox.removeChild(loader);
 
     if (data.choices && data.choices[0]) {
       const reply = data.choices[0].message.content;
       appendMessage(reply, 'bot');
       history[currentChatId].messages.push({ sender: 'bot', text: reply });
       saveChatHistory(history);
-    } else {
-      appendMessage("Erreur lors de la communication avec l'API.", 'bot');
     }
   } catch (error) {
-    console.error(error);
-    chatBox.removeChild(wrapper);
-    appendMessage("Problem f-connexion, thabbet mel internet mte3ek.", 'bot');
+    chatBox.removeChild(loader);
+    appendMessage("Problem f-connexion, thabbet internet.", 'bot');
   } finally {
     isTyping = false;
   }
 }
 </script>
-
 </body>
 </html>
