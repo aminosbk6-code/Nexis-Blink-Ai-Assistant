@@ -1,4 +1,4 @@
-const GROQ_API_KEY = "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";
+const GROQ_API_KEY = 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;
 
 const chatBox = document.getElementById('chatBox');
 const userInput = document.getElementById('userInput');
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   startNewChat(); 
 });
 
-// 🚀 2. LocalStorage Handler (Clean State)
+// 🚀 2. LocalStorage Handler
 function getChatHistory() {
   const history = localStorage.getItem("bk_chat_history");
   return history ? JSON.parse(history) : {};
@@ -37,12 +37,14 @@ function startNewChat() {
 
 // 🚀 4. Wipe Out Local History
 function clearAllHistory() {
-  localStorage.removeItem("bk_chat_history");
-  renderHistorySidebar();
-  startNewChat();
+  if (confirm("T7ebb tfassa5 el-historique mta3 el-chats l-kol?")) {
+    localStorage.removeItem("bk_chat_history");
+    renderHistorySidebar();
+    startNewChat();
+  }
 }
 
-// 🚀 5. Core Message Delivery Engine (With new API Key & Fallbacks)
+// 🚀 5. Core Message Delivery Engine with Dynamic Fallback Routing
 async function sendMessage(customMessage = null) {
   const message = customMessage ? customMessage.trim() : userInput.value.trim();
   if (!message) return;
@@ -67,8 +69,6 @@ async function sendMessage(customMessage = null) {
     history[currentChatId].messages.push({ sender: 'user', text: message });
     lastUserMessage = message;
     userInput.value = '';
-  } else {
-    lastUserMessage = customMessage;
   }
 
   saveChatHistory(history);
@@ -82,7 +82,7 @@ async function sendMessage(customMessage = null) {
 
   let response;
   try {
-    // 🎯 Attempt 1: Try using the selected model
+    // 🎯 Attempt 1: Try using the user's selected model from the list
     response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -95,10 +95,11 @@ async function sendMessage(customMessage = null) {
       })
     });
 
-    // 🔄 Dynamic Fallback to Llama 3.3 if something goes wrong
+    // 🔄 Dynamic Fallback: If selected model throws an error, switch instantly to stable Llama 3.3
     if (!response.ok && selectedModel !== "llama-3.3-70b-versatile") {
+      console.warn(`Model ${selectedModel} failed. Switching over automatically to stable Llama 3.3...`);
       selectedModel = "llama-3.3-70b-versatile";
-      modelSelect.value = "llama-3.3-70b-versatile"; 
+      modelSelect.value = "llama-3.3-70b-versatile"; // Update the selection UI as well
       
       response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
@@ -132,137 +133,8 @@ async function sendMessage(customMessage = null) {
 
   } catch (error) {
     typingMessage.remove();
-    appendMessage("Samahni, l-AI tawa masta9balech el-message mte3ek. Jarreb eb3ath mara o5ra tawa yetrigel!", 'bot');
-    console.error("Execution error:", error);
-  }
-}
-
-// 🚀 6. Message Bubble Visual Renderer
-function appendMessage(text, sender) {
-  const messageDiv = document.createElement('div');
-  messageDiv.classList.add('message', `${sender}-message`);
-
-  const textDiv = document.createElement('div');
-  textDiv.classList.add('message-text');
-  textDiv.innerText = text;
-  messageDiv.appendChild(textDiv);
-
-  if (sender === 'bot' && !text.includes("Estanna Njewbek")) {
-    const actionsDiv = document.createElement('div');
-    actionsDiv.classList.add('msg-actions');
-    
-    actionsDiv.innerHTML = `<button class="action-btn" onclick="copyMessage(this)" title="Copy text"><i class="far fa-copy"></i> Copy</button> <button class="action-btn" onclick="regenerateMessage()" title="Regenerate response"><i class="fas fa-redo-alt"></i> Retry</button>`;
-    
-    messageDiv.appendChild(actionsDiv);
-  }
-
-  chatBox.appendChild(messageDiv);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-// 🚀 7. Sidebar Render Engine
-function renderHistorySidebar() {
-  historyList.innerHTML = "";
-  const history = getChatHistory();
-
-  Object.keys(history).reverse().forEach(chatId => {
-    const chatData = history[chatId];
-    
-    const item = document.createElement('div');
-    item.classList.add('history-item');
-    if (chatId === currentChatId) item.classList.add('active');
-    item.setAttribute('data-id', chatId);
-    
-    item.innerHTML = `<i class="far fa-comment-alt"></i> ${chatData.title}`;
-    item.addEventListener('click', () => loadChat(chatId));
-    
-    historyList.appendChild(item);
-  });
-}
-
-// 🚀 8. Session Restorer
-function loadChat(chatId) {
-  const history = getChatHistory();
-  if (!history[chatId]) return;
-
-  currentChatId = chatId;
-  
-  document.querySelectorAll('.history-item').forEach(item => {
-    item.classList.remove('active');
-    if (item.getAttribute('data-id') === chatId) item.classList.add('active');
-  });
-
-  chatBox.innerHTML = "";
-  const messages = history[chatId].messages;
-  
-  if (messages.length === 0) {
-    chatBox.innerHTML = `<div class="message bot-message"> <div class="message-text">Hello! Welcome to Nexis Blink AI, Kifach najem n3awnek lyom?😃</div> </div>`;
-  } else {
-    messages.forEach(msg => {
-      appendMessage(msg.text, msg.sender);
-    });
-  }
-  
-  const userMsgs = messages.filter(m => m.sender === 'user');
-  lastUserMessage = userMsgs.length > 0 ? userMsgs[userMsgs.length - 1].text : "";
-}
-
-function copyMessage(button) {
-  const textToCopy = button.closest('.message').querySelector('.message-text').innerText;
-  navigator.clipboard.writeText(textToCopy).then(() => {
-    button.innerHTML = `<i class="fas fa-check" style="color: #00ffcc"></i> Copied!`;
-    setTimeout(() => {
-      button.innerHTML = `<i class="far fa-copy"></i> Copy`;
-    }, 2000);
-  });
-}
-
-function regenerateMessage() {
-  if (lastUserMessage) {
-    sendMessage(lastUserMessage);
-  }
-}
-
-sendBtn.addEventListener('click', () => sendMessage());
-userInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') sendMessage();
-});
-      
-      response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${GROQ_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: selectedModel,
-          messages: [{ role: "user", content: message }]
-        })
-      });
-    }
-
-    const data = await response.json();
-    
-    if (data.error) {
-      throw new Error(data.error.message);
-    }
-    
-    const botReply = data.choices[0].message.content;
-
-    typingMessage.remove();
-    appendMessage(botReply, 'bot');
-
-    const updatedHistory = getChatHistory();
-    if (updatedHistory[currentChatId]) {
-      updatedHistory[currentChatId].messages.push({ sender: 'bot', text: botReply });
-      saveChatHistory(updatedHistory);
-    }
-
-  } catch (error) {
-    typingMessage.remove();
-    // 🌟 Honi badalna el-error message bech may9ollesch "error fi API"
-    appendMessage("Samahni, l-AI tawa masta9balech el-message mte3ek. Jarreb eb3ath mara o5ra tawa yetrigel!", 'bot');
-    console.error("Error occurred:", error);
+    appendMessage("Samahni, Famma error fi l-connexion bel API walla l-model hadha tawa overload.", 'bot');
+    console.error(error);
   }
 }
 
