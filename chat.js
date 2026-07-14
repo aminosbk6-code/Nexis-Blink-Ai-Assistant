@@ -53,6 +53,7 @@ async function sendMessage(customMessage = null) {
   const history = getChatHistory();
   let isBrandNewChat = false;
 
+  // Itha l-chat jdid barcha, na3mloulou title
   if (!history[currentChatId]) {
     isBrandNewChat = true;
     const words = message.split(" ");
@@ -64,11 +65,15 @@ async function sendMessage(customMessage = null) {
     };
   }
 
+  // Ken el-message jey mel input normal (mouch retry)
   if (!customMessage) {
     appendMessage(message, 'user');
     history[currentChatId].messages.push({ sender: 'user', text: message });
     lastUserMessage = message;
     userInput.value = '';
+  } else {
+    // Itha kenet "Retry", n7ottouha fil-lastUserMessage bech nab9aw fard sye9
+    lastUserMessage = customMessage;
   }
 
   saveChatHistory(history);
@@ -82,7 +87,7 @@ async function sendMessage(customMessage = null) {
 
   let response;
   try {
-    // 🎯 Attempt 1: Try using the user's selected model from the list
+    // 🎯 Attempt 1: Try using the user's selected model
     response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -95,11 +100,11 @@ async function sendMessage(customMessage = null) {
       })
     });
 
-    // 🔄 Dynamic Fallback: If selected model throws an error, switch instantly to stable Llama 3.3
+    // 🔄 Dynamic Fallback: Swapping to Llama 3.3 in case of first failure
     if (!response.ok && selectedModel !== "llama-3.3-70b-versatile") {
       console.warn(`Model ${selectedModel} failed. Switching over automatically to stable Llama 3.3...`);
       selectedModel = "llama-3.3-70b-versatile";
-      modelSelect.value = "llama-3.3-70b-versatile"; // Update the selection UI as well
+      modelSelect.value = "llama-3.3-70b-versatile"; 
       
       response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
@@ -133,8 +138,9 @@ async function sendMessage(customMessage = null) {
 
   } catch (error) {
     typingMessage.remove();
-    appendMessage("Samahni, Famma error fi l-connexion bel API walla l-model hadha tawa overload.", 'bot');
-    console.error(error);
+    // 🌟 Honi badalna el-error message bech may9ollesch "error fi API"
+    appendMessage("Samahni, l-AI tawa masta9balech el-message mte3ek. Jarreb eb3ath mara o5ra tawa yetrigel!", 'bot');
+    console.error("Error occurred:", error);
   }
 }
 
