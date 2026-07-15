@@ -30,14 +30,14 @@ function startNewChat() {
   currentChatId = "chat_" + Date.now();
   lastUserMessage = "";
   
-  chatBox.innerHTML = `<div class="message bot-message"> <div class="message-text">Hello! Welcome to Nexis Blink AI, Kifach najem n3awnek lyom?😃</div> </div>`;
+  chatBox.innerHTML = `<div class="message bot-message"> <div class="message-text">Salam khouya! Welcome to Nexis Blink AI, wach raki 7ab t'scanni lyom?😃</div> </div>`;
   
   document.querySelectorAll('.history-item').forEach(item => item.classList.remove('active'));
 }
 
 // 🚀 4. Wipe Out Local History
 function clearAllHistory() {
-  if (confirm("T7ebb tfassa5 el-historique mta3 el-chats l-kol?")) {
+  if (confirm("Hab t'fassi el-historique ga3?")) {
     localStorage.removeItem("bk_chat_history");
     renderHistorySidebar();
     startNewChat();
@@ -53,8 +53,8 @@ async function sendMessage(customMessage = null) {
   const history = getChatHistory();
   let isBrandNewChat = false;
 
-  // تعريف الرسالة التونسية
-  const systemInstruction = "أنت مساعد ذكي ومبرمج محترف. القاعدة الأساسية: لازم ديما تحكي وتجاوب باللهجة التونسية فقط. استعمل كلمات تونسية دارجة (كيما: 'باهي'، 'فهمتك'، 'شنوة'، 'توا'، 'باش'، 'قداش'). تجنب اللهجات الأخرى.";
+  // التعليمات الجديدة باللهجة الجزائرية
+  const systemInstruction = "أنت مساعد ذكي ومبرمج محترف. القاعدة الأساسية: لازم ديما تحكي وتجاوب بالدارجة الجزائرية فقط. استعمل كلمات جزائرية دارجة (كيما: 'خويا'، 'واش كاين'، 'صحيت'، 'كاش جديد'، 'واعر'). تجنب اللهجات الأخرى.";
 
   if (!history[currentChatId]) {
     isBrandNewChat = true;
@@ -77,10 +77,10 @@ async function sendMessage(customMessage = null) {
   saveChatHistory(history);
   if (isBrandNewChat) renderHistorySidebar();
 
-  appendMessage("Estanna Njewbek...", 'bot');
+  appendMessage("Istanna chwya...", 'bot');
   const typingMessage = chatBox.lastChild;
   const bubble = typingMessage.querySelector('.message-text');
-  bubble.innerHTML = `Estanna Njewbek <div class="typing-indicator"><span></span><span></span><span></span></div>`;
+  bubble.innerHTML = `Istanna chwya <div class="typing-indicator"><span></span><span></span><span></span></div>`;
 
   let response;
   try {
@@ -130,12 +130,11 @@ async function sendMessage(customMessage = null) {
     }
   } catch (error) {
     typingMessage.remove();
-    appendMessage("Samahni, Famma error fi l-connexion bel API walla l-model hadha tawa overload.", 'bot');
+    appendMessage("Samahni khouya, kach error fel connexion walla l-model rahou overload.", 'bot');
     console.error(error);
   }
 }
 
-// باقي الـ functions (appendMessage, renderHistorySidebar, etc.) تبقى كيما هي.
 function appendMessage(text, sender) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message', `${sender}-message`);
@@ -143,7 +142,7 @@ function appendMessage(text, sender) {
   textDiv.classList.add('message-text');
   textDiv.innerText = text;
   messageDiv.appendChild(textDiv);
-  if (sender === 'bot' && !text.includes("Estanna Njewbek")) {
+  if (sender === 'bot' && !text.includes("Istanna chwya")) {
     const actionsDiv = document.createElement('div');
     actionsDiv.classList.add('msg-actions');
     actionsDiv.innerHTML = `<button class="action-btn" onclick="copyMessage(this)" title="Copy text"><i class="far fa-copy"></i> Copy</button> <button class="action-btn" onclick="regenerateMessage()" title="Regenerate response"><i class="fas fa-redo-alt"></i> Retry</button>`;
