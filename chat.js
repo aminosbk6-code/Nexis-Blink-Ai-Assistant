@@ -1,4 +1,4 @@
-const GROQ_API_KEY = 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;
+const GROQ_API_KEY = "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";
 
 const chatBox = document.getElementById('chatBox');
 const userInput = document.getElementById('userInput');
@@ -44,7 +44,7 @@ function clearAllHistory() {
   }
 }
 
-// 🚀 5. Core Message Delivery Engine with Dynamic Fallback Routing
+// 🚀 5. Core Message Delivery Engine
 async function sendMessage(customMessage = null) {
   const message = customMessage ? customMessage.trim() : userInput.value.trim();
   if (!message) return;
@@ -52,6 +52,9 @@ async function sendMessage(customMessage = null) {
   let selectedModel = modelSelect.value;
   const history = getChatHistory();
   let isBrandNewChat = false;
+
+  // تعريف الرسالة التونسية
+  const systemInstruction = "أنت مساعد ذكي ومبرمج محترف. القاعدة الأساسية: لازم ديما تحكي وتجاوب باللهجة التونسية فقط. استعمل كلمات تونسية دارجة (كيما: 'باهي'، 'فهمتك'، 'شنوة'، 'توا'، 'باش'، 'قداش'). تجنب اللهجات الأخرى.";
 
   if (!history[currentChatId]) {
     isBrandNewChat = true;
@@ -77,51 +80,46 @@ async function sendMessage(customMessage = null) {
   appendMessage("Estanna Njewbek...", 'bot');
   const typingMessage = chatBox.lastChild;
   const bubble = typingMessage.querySelector('.message-text');
-  
   bubble.innerHTML = `Estanna Njewbek <div class="typing-indicator"><span></span><span></span><span></span></div>`;
 
   let response;
   try {
-    // 🎯 Attempt 1: Try using the user's selected model from the list
+    const payload = {
+      model: selectedModel,
+      messages: [
+        { role: "system", content: systemInstruction },
+        { role: "user", content: message }
+      ]
+    };
+
     response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${GROQ_API_KEY}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        model: selectedModel,
-        messages: [{ role: "user", content: message }]
-      })
+      body: JSON.stringify(payload)
     });
 
-    // 🔄 Dynamic Fallback: If selected model throws an error, switch instantly to stable Llama 3.3
     if (!response.ok && selectedModel !== "llama-3.3-70b-versatile") {
-      console.warn(`Model ${selectedModel} failed. Switching over automatically to stable Llama 3.3...`);
       selectedModel = "llama-3.3-70b-versatile";
-      modelSelect.value = "llama-3.3-70b-versatile"; // Update the selection UI as well
+      modelSelect.value = "llama-3.3-70b-versatile";
       
+      payload.model = selectedModel;
       response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${GROQ_API_KEY}`,
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          model: selectedModel,
-          messages: [{ role: "user", content: message }]
-        })
+        body: JSON.stringify(payload)
       });
     }
 
     const data = await response.json();
-    
-    if (data.error) {
-      throw new Error(data.error.message);
-    }
+    if (data.error) throw new Error(data.error.message);
     
     const botReply = data.choices[0].message.content;
-
     typingMessage.remove();
     appendMessage(botReply, 'bot');
 
@@ -130,7 +128,6 @@ async function sendMessage(customMessage = null) {
       updatedHistory[currentChatId].messages.push({ sender: 'bot', text: botReply });
       saveChatHistory(updatedHistory);
     }
-
   } catch (error) {
     typingMessage.remove();
     appendMessage("Samahni, Famma error fi l-connexion bel API walla l-model hadha tawa overload.", 'bot');
@@ -138,73 +135,50 @@ async function sendMessage(customMessage = null) {
   }
 }
 
-// 🚀 6. Message Bubble Visual Renderer
+// باقي الـ functions (appendMessage, renderHistorySidebar, etc.) تبقى كيما هي.
 function appendMessage(text, sender) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message', `${sender}-message`);
-
   const textDiv = document.createElement('div');
   textDiv.classList.add('message-text');
   textDiv.innerText = text;
   messageDiv.appendChild(textDiv);
-
   if (sender === 'bot' && !text.includes("Estanna Njewbek")) {
     const actionsDiv = document.createElement('div');
     actionsDiv.classList.add('msg-actions');
-    
     actionsDiv.innerHTML = `<button class="action-btn" onclick="copyMessage(this)" title="Copy text"><i class="far fa-copy"></i> Copy</button> <button class="action-btn" onclick="regenerateMessage()" title="Regenerate response"><i class="fas fa-redo-alt"></i> Retry</button>`;
-    
     messageDiv.appendChild(actionsDiv);
   }
-
   chatBox.appendChild(messageDiv);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// 🚀 7. Sidebar Render Engine
 function renderHistorySidebar() {
   historyList.innerHTML = "";
   const history = getChatHistory();
-
   Object.keys(history).reverse().forEach(chatId => {
     const chatData = history[chatId];
-    
     const item = document.createElement('div');
     item.classList.add('history-item');
     if (chatId === currentChatId) item.classList.add('active');
     item.setAttribute('data-id', chatId);
-    
     item.innerHTML = `<i class="far fa-comment-alt"></i> ${chatData.title}`;
     item.addEventListener('click', () => loadChat(chatId));
-    
     historyList.appendChild(item);
   });
 }
 
-// 🚀 8. Session Restorer
 function loadChat(chatId) {
   const history = getChatHistory();
   if (!history[chatId]) return;
-
   currentChatId = chatId;
-  
   document.querySelectorAll('.history-item').forEach(item => {
     item.classList.remove('active');
     if (item.getAttribute('data-id') === chatId) item.classList.add('active');
   });
-
   chatBox.innerHTML = "";
-  const messages = history[chatId].messages;
-  
-  if (messages.length === 0) {
-    chatBox.innerHTML = `<div class="message bot-message"> <div class="message-text">Hello! Welcome to Nexis Blink AI, Kifach najem n3awnek lyom?😃</div> </div>`;
-  } else {
-    messages.forEach(msg => {
-      appendMessage(msg.text, msg.sender);
-    });
-  }
-  
-  const userMsgs = messages.filter(m => m.sender === 'user');
+  history[chatId].messages.forEach(msg => appendMessage(msg.text, msg.sender));
+  const userMsgs = history[chatId].messages.filter(m => m.sender === 'user');
   lastUserMessage = userMsgs.length > 0 ? userMsgs[userMsgs.length - 1].text : "";
 }
 
@@ -212,19 +186,13 @@ function copyMessage(button) {
   const textToCopy = button.closest('.message').querySelector('.message-text').innerText;
   navigator.clipboard.writeText(textToCopy).then(() => {
     button.innerHTML = `<i class="fas fa-check" style="color: #00ffcc"></i> Copied!`;
-    setTimeout(() => {
-      button.innerHTML = `<i class="far fa-copy"></i> Copy`;
-    }, 2000);
+    setTimeout(() => { button.innerHTML = `<i class="far fa-copy"></i> Copy`; }, 2000);
   });
 }
 
 function regenerateMessage() {
-  if (lastUserMessage) {
-    sendMessage(lastUserMessage);
-  }
+  if (lastUserMessage) sendMessage(lastUserMessage);
 }
 
 sendBtn.addEventListener('click', () => sendMessage());
-userInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') sendMessage();
-});
+userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
